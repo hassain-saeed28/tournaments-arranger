@@ -1,0 +1,83 @@
+---
+title: Tournament Arranger
+---
+classDiagram
+    class Administrator {
+        -String id
+        -String name
+        -String username
+        -String email
+    }
+    Administrator: +addTeam() void
+    Administrator: +addSport() void
+    Administrator: +archiveTournament() void
+    Administrator: +createTournament() void
+    Administrator: +editTournamentData() void
+    Administrator: +generateMatches() void
+    Administrator: +recordMatchScores() void
+    Administrator: +viewMatchesScores() void
+    Administrator: +viewParticipantRanking() void
+    Administrator: +viewParticipantProfile() void
+    Administrator: +viewMatchesSchedule() void
+    Administrator -- Tournament
+
+    class Participant {
+    }
+
+    class Student {
+        -String id
+        -String name
+        -String username
+        -String email
+    }
+    %% history with rank of each tournament
+    Student: +createTeam() void
+    Student: +registerTournament() void
+    Student: +viewMatchesScores() void
+    Student: +viewMatchesSchedule() void
+    Student: +viewParticipantProfile() void
+    Student: +leaveTournament() void
+    Student: +viewParticipantRanking() void
+
+    Participant <|-- Student
+
+    class Team {
+        -String id
+        -String name
+        -List~Student~ students
+    }
+    %% what tournament they are participating in
+    Participant <|-- Team
+
+    class Game {
+        -String id
+        -String name
+    }
+
+    class Tournament {
+        -String id
+        -String name
+        -Game game
+        -ArrayList~Participat~ participats
+        -Date startDate
+        -Date endDate
+        -boolean isArchived
+        -boolean isOpen
+    }
+    Tournament: +closeRegistration() void
+    Tournament: +addParticipat() void
+    Tournament -- Game
+
+    class RoundRobinTournament {
+    }
+    Tournament <|-- RoundRobinTournament
+
+    class EliminationTournament {
+    }
+    Tournament <|-- EliminationTournament
+
+    class Match {
+        -String id
+        -Date date
+    }
+    %% how to distance between elimination and round robin tournament

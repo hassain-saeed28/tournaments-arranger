@@ -1,0 +1,56 @@
+@startuml project
+left to right direction
+
+actor Administrator as admin
+actor Participant as particip
+
+rectangle "Tournaments Arranger" {
+    usecase "Create tournament" as create_tournaments
+    usecase "Choose sport/game" as choose_tournament_type
+    choose_tournament_type -right-> create_tournaments #line.dashed : extends
+    usecase "Set start & end dates" as set_dates
+    set_dates --> create_tournaments #line.dashed : extends
+
+    usecase "Edit tournament" as edit_tournament_data
+    usecase "Edit match scores" as edit_match_scores
+    edit_match_scores --> edit_tournament_data #line.dashed : extends
+    usecase "Record match scores" as record_match_scores
+    record_match_scores --> edit_tournament_data #line.dashed : extends
+    usecase "Stop registration" as stop_registration
+    stop_registration --> edit_tournament_data #line.dashed : extends
+    usecase "Archive tournament" as archive_tournament
+    archive_tournament --> edit_tournament_data #line.dashed : extends
+
+    usecase "View match scores" as view_match_scores
+    usecase "View participant ranking" as view_participant_ranking
+    usecase "View match schedule" as view_match_schedule
+    usecase "Add sport/game" as add_sport_game
+
+
+    usecase "View participants profile" as view_participant_profile
+    usecase "Create team" as create_team
+    usecase "Generate matches" as generate_matches
+    usecase "Leave tournament" as leave_tournament
+    usecase "Register in tournament" as register_in_tournament
+    ' usecase "Sign up in different\ntournament in the same time" as signup
+}
+
+admin --> create_tournaments
+admin --> edit_tournament_data
+admin --> generate_matches
+admin --> add_sport_game
+
+admin ---> view_match_schedule
+particip --> view_match_schedule
+admin --> view_participant_ranking
+particip --> view_participant_ranking
+admin --> create_team
+particip --> create_team
+admin --> view_participant_profile
+particip --> view_participant_profile
+admin --> view_match_scores
+particip --> view_match_scores
+
+particip --> register_in_tournament
+particip --> leave_tournament
+@enduml

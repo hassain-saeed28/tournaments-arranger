@@ -7,23 +7,22 @@ actor Participant as particip
 rectangle "Tournaments Arranger" {
     usecase "Create tournament" as create_tournaments
     usecase "Set start & end dates" as set_dates
-    set_dates -up-> create_tournaments #line.dashed : extends
+    set_dates -up-> create_tournaments #line.dashed : <<extends>>
 
     usecase "Edit tournament" as edit_tournament_data
     usecase "Edit match scores" as edit_match_scores
-    edit_match_scores -up-> edit_tournament_data #line.dashed : extends
+    edit_match_scores -up-> edit_tournament_data #line.dashed : <<extends>>
     usecase "Record match scores" as record_match_scores
-    record_match_scores -up-> edit_tournament_data #line.dashed : extends
+    record_match_scores -up-> edit_tournament_data #line.dashed : <<extends>>
     usecase "Stop registration" as stop_registration
-    stop_registration -up-> edit_tournament_data #line.dashed : extends
+    stop_registration -up-> edit_tournament_data #line.dashed : <<extends>>
     usecase "Archive tournament" as archive_tournament
-    archive_tournament -up-> edit_tournament_data #line.dashed : extends
+    archive_tournament -up-> edit_tournament_data #line.dashed : <<extends>>
 
     usecase "View match scores" as view_match_scores
     usecase "View participant ranking" as view_participant_ranking
     usecase "View match schedule" as view_match_schedule
     usecase "Add sport/game" as add_sport_game
-
 
     usecase "View participants profile" as view_participant_profile
     usecase "Create team" as create_team

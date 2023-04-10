@@ -6,8 +6,6 @@ actor Participant as particip
 
 rectangle "Tournaments Arranger" {
     usecase "Create tournament" as create_tournaments
-    usecase "Choose sport/game" as choose_tournament_type
-    choose_tournament_type -right-> create_tournaments #line.dashed : extends
     usecase "Set start & end dates" as set_dates
     set_dates --> create_tournaments #line.dashed : extends
 
@@ -32,7 +30,6 @@ rectangle "Tournaments Arranger" {
     usecase "Generate matches" as generate_matches
     usecase "Leave tournament" as leave_tournament
     usecase "Register in tournament" as register_in_tournament
-    ' usecase "Sign up in different\ntournament in the same time" as signup
 }
 
 admin --> create_tournaments

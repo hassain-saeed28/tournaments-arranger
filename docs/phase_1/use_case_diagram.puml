@@ -21,7 +21,7 @@ rectangle "Tournaments Arranger" {
 
     usecase "View match scores" as view_match_scores
     usecase "View participant ranking" as view_participant_ranking
-    usecase "View match schedule" as view_match_schedule
+    usecase "View matches schedule" as view_match_schedule
     usecase "Add sport/game" as add_sport_game
 
     usecase "View participants profile" as view_participant_profile

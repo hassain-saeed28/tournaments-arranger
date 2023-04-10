@@ -57,7 +57,7 @@
         <li>Select a match that doesn't have any scores yet.</li>
         <li>Type the match scores.</li>
         <li>Ask for confirmation.</li>
-        <li>Set match scores</li>
+        <li>Set match scores.</li>
       </ol>
     </td>
   </tr>
@@ -80,15 +80,15 @@
           </ol>
         </li>
         <li>
-          After finishing the normal flow, if the recorded scores is for the
+          After finishing the normal flow, if the recorded scores are for the
           last match:
           <ol>
             <li>Set tournament winner.</li>
           </ol>
         </li>
         <li>
-          After finishing the normal flow, if the recorded scores isn't for the
-          last match and the tournament is Elimination type:
+          After finishing the normal flow, if the recorded scores aren't for
+          the last match and the tournament is Elimination type:
           <ol>
             <li>Set next match participants.</li>
           </ol>
@@ -118,7 +118,7 @@
                   If a team lose, they are eliminated from the tournament.
                 </li>
                 <li>
-                  If two teams draws, extra time well be given until one team
+                  If two teams draw, extra time well be given until one team
                   win.
                 </li>
               </ul>

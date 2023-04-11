@@ -8,76 +8,98 @@ classDiagram
         -String username
         -String email
     }
-    Administrator: +addTeam() void
-    Administrator: +addSport() void
-    Administrator: +archiveTournament() void
-    Administrator: +createTournament() void
-    Administrator: +editTournamentData() void
-    Administrator: +generateMatches() void
-    Administrator: +recordMatchScores() void
-    Administrator: +viewMatchesScores() void
-    Administrator: +viewParticipantRanking() void
-    Administrator: +viewParticipantProfile() void
-    Administrator: +viewMatchesSchedule() void
-    Administrator -- Tournament
+    Administrator: +createTeam(Tournament, Team) void
+    Administrator: +addSport(Sport) void
+    Administrator: +archiveTournament(Tournament) void
+    Administrator: +createTournament(Tournament) void
+    Administrator: +editTournament(Tournament) void
+    Administrator: +generateMatches(Tournament) void
+    Administrator: +recordMatchScores(Tournament, Match) void
+    Administrator: +viewMatchesScores(Tournament, Match) void
+    Administrator: +viewParticipantRanking(Tournament) void
+    Administrator: +viewParticipantProfile(Student) void
+    Administrator: +viewParticipantProfile(Team) void
+    Administrator: +viewMatchesSchedule(Tournament) void
+    Administrator "1" *-- "*" Tournament: organize
+    Administrator "*" -- "1" Sport: add
 
     class Participant {
+        <<abstract>>
+        -String id
+        -String name
     }
+    Participant: +createTeam(Tournament, Team) void
+    Participant: +viewMatchesScores(Tournament, Match) void
+    Participant: +viewParticipantRanking(Tournament) void
+    Participant: +viewMatchesSchedule(Tournament) void
+    Participant: +leaveTournament(Tournament) void
+    Participant: +registerInTournament(Tournament) void
+    Participant: +viewParticipantProfile(Student) void
+    Participant: +viewParticipantProfile(Team) void
 
     class Student {
         -String id
-        -String name
         -String username
         -String email
     }
-    %% history with rank of each tournament
-    Student: +createTeam() void
-    Student: +registerTournament() void
-    Student: +viewMatchesScores() void
-    Student: +viewMatchesSchedule() void
-    Student: +viewParticipantProfile() void
-    Student: +leaveTournament() void
-    Student: +viewParticipantRanking() void
-
-    Participant <|-- Student
+    Student: +viewStudentProfile() void
+    Participant <|-- Student: exetnds
 
     class Team {
         -String id
-        -String name
         -List~Student~ students
+        -Tournament tournamentParticipatingIn
     }
-    %% what tournament they are participating in
-    Participant <|-- Team
+    Administrator "1" -- "*" Team: create
 
-    class Game {
+    class Sport {
         -String id
         -String name
     }
+    Participant <|-- Team: exetnds
+    Participant "*" -- "*" Team: create
+
+    class TournamentType {
+        <<enumeration>>
+        Elimination
+        RoundRobin
+    }
+    TournamentType "1" -- "1" Tournament: type
 
     class Tournament {
         -String id
         -String name
-        -Game game
+        -Sport sport
         -ArrayList~Participat~ participats
         -Date startDate
         -Date endDate
         -boolean isArchived
         -boolean isOpen
+        -ArrayList~Match~ matches
+        -TournamentType type
+        -Integer maxStudents
     }
+    Tournament: +addParticipant(Participant) void
     Tournament: +closeRegistration() void
-    Tournament: +addParticipat() void
-    Tournament -- Game
-
-    class RoundRobinTournament {
-    }
-    Tournament <|-- RoundRobinTournament
-
-    class EliminationTournament {
-    }
-    Tournament <|-- EliminationTournament
+    Tournament: +recordMatchScores(Match) void
+    Tournament "1" -- "1" Sport: game
+    Tournament "1" -- "*" Participant: game
 
     class Match {
         -String id
         -Date date
+        -Participant participantOne
+        -Participant participantTwo
+        -Tournament tournament
     }
-    %% how to distance between elimination and round robin tournament
+    Match "*" --* "1" Tournament: consist
+    Match "*" -- "2" Participant: participate
+
+    class Rank {
+        -String id
+        -Tournament tournament
+        -Participant participant
+        -Integer rank
+    }
+    Tournament "1" -- "*" Rank: ranks
+    Rank "1" -- "1" Participant: rank

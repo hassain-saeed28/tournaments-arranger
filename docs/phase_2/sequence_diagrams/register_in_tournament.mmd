@@ -1,0 +1,28 @@
+---
+title: Register in Tournament
+---
+sequenceDiagram
+    actor student as Student
+
+    participant tournament as Tournament
+    participant database as Database
+
+    activate tournament
+    student ->> tournament: Select tournament open for registration
+    activate student
+    alt is team based
+        tournament ->> student: ask for team details
+        student -->>  tournament: return team details
+
+        activate database
+        tournament ->> database: validate that all student aren't participating in same tournament again
+        database -->>  tournament: OK
+    else is individual based
+        student -->>  tournament: return student details
+    end
+
+    tournament ->> database: Add to database
+    Note right of database: Send confirmation email
+    deactivate student
+    deactivate tournament
+    deactivate database

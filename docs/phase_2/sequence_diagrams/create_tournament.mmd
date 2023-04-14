@@ -1,0 +1,49 @@
+---
+title: Create Tournament
+---
+sequenceDiagram
+    actor admin as Administrator
+
+    participant tournament as Tournament
+    participant database as Database
+
+    activate tournament
+    admin ->> tournament: Create tournament
+    activate admin
+    tournament ->> admin: Ask for tournament name
+    admin -->> tournament: Return tournament name
+
+    tournament ->> admin: Select for type of tournament round robin or elimination
+    admin -->> tournament: Return elinimation or round robin
+
+    tournament ->> admin: Select for team or individual based
+    admin -->> tournament: Return team or individual
+
+    alt is team based
+        tournament ->> admin: Ask for number of students in each team
+        admin -->> tournament: Return number of students
+
+        tournament ->> admin: Ask for number of teams
+        admin -->> tournament: Return number of teams
+    else is individual based
+        tournament ->> admin: Ask for number of students
+        admin -->> tournament: Return number of students
+    end
+
+    tournament ->> admin: Ask for tournament period
+    admin -->> tournament: Return tournament period
+
+    tournament ->> admin: Ask for period between rounds
+    admin -->> tournament: Return period between rounds
+
+    activate database
+    tournament ->> database: Get sports
+    database -->> tournament: Return sports
+    deactivate database
+
+    tournament ->> admin: Select sport/game
+    admin -->> tournament: Return sport/game
+    deactivate admin
+
+    tournament ->> database: Add to database
+    deactivate tournament

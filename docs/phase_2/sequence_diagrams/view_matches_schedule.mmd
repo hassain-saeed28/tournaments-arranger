@@ -1,0 +1,28 @@
+---
+title: View Match Schedule
+---
+sequenceDiagram
+    actor admin as Administrator
+    %% actor student as Student
+
+    participant database as Database
+    participant tournament as Tournament
+    participant match as Match
+
+    admin ->> database: fetch tournaments
+    activate admin
+    activate database
+    database ->> tournament: new Tournament
+    Note left of tournament: ArrayList<Tournament>
+    tournament -->> admin: return tournaments
+    admin ->> tournament: select tournament
+
+    tournament ->> database: fetch matches
+    database ->> match: new Match
+    activate match
+    deactivate database
+    Note left of tournament: ArrayList<Match>
+    match -->> admin: return matches
+    deactivate match
+
+    deactivate admin

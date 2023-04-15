@@ -103,3 +103,9 @@ classDiagram
     }
     Tournament "1" -- "*" Rank: ranks
     Rank "1" -- "1" Participant: rank
+
+    class Email {
+    }
+    Email: +sendConfirmationEmail(Participant, Tournament) void
+    Participant "1" -- "1" Email: send email
+    Tournament "1" -- "1" Email: fetch info

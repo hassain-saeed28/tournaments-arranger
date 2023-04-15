@@ -6,44 +6,35 @@ sequenceDiagram
 
     participant tournament as Tournament
     participant database as Database
+    participant sport as Sport
 
+    admin ->> tournament: new Tournament(name, type, based)
     activate tournament
-    admin ->> tournament: Create tournament
     activate admin
-    tournament ->> admin: Ask for tournament name
-    admin -->> tournament: Return tournament name
-
-    tournament ->> admin: Select for type of tournament round robin or elimination
-    admin -->> tournament: Return elinimation or round robin
-
-    tournament ->> admin: Select for team or individual based
-    admin -->> tournament: Return team or individual
+    Note left of admin: other parameter are default
+    Note left of admin: for creating new tournament
 
     alt is team based
-        tournament ->> admin: Ask for number of students in each team
-        admin -->> tournament: Return number of students
-
-        tournament ->> admin: Ask for number of teams
-        admin -->> tournament: Return number of teams
+        admin ->> tournament: set number of students in each team
+        admin ->> tournament: set number of teams
     else is individual based
-        tournament ->> admin: Ask for number of students
-        admin -->> tournament: Return number of students
+        admin ->> tournament: set number of students
     end
 
-    tournament ->> admin: Ask for tournament period
-    admin -->> tournament: Return tournament period
+    admin ->> tournament: set tournament period
+    admin ->> tournament: set period between rounds
 
-    tournament ->> admin: Ask for period between rounds
-    admin -->> tournament: Return period between rounds
-
+    tournament ->> database: get sports
     activate database
-    tournament ->> database: Get sports
-    database -->> tournament: Return sports
-    deactivate database
+    database ->> sport: new Sport
+    activate sport
+    Note right of sport: return ArrayList<Sport>
+    sport -->> admin: return sports
+    deactivate sport
 
-    tournament ->> admin: Select sport/game
-    admin -->> tournament: Return sport/game
+    admin ->> tournament: set sport/game
     deactivate admin
 
-    tournament ->> database: Add to database
+    tournament ->> database: add to database
     deactivate tournament
+    deactivate database

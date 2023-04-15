@@ -2,27 +2,39 @@
 title: Register in Tournament
 ---
 sequenceDiagram
-    actor student as Student
+    actor student_actor as Student
 
     participant tournament as Tournament
+    participant team as Team
+    participant student_class as Student
     participant database as Database
+    participant email as Email
 
+    student_actor ->> tournament: select tournament open for registration
     activate tournament
-    student ->> tournament: Select tournament open for registration
-    activate student
+    activate student_actor
     alt is team based
-        tournament ->> student: ask for team details
-        student -->>  tournament: return team details
+        student_actor ->> team: new Team
+        activate team
+        team ->> tournament: add participant
+        deactivate team
 
+        tournament ->> database: validate all student_actor aren't participating in same tournament
         activate database
-        tournament ->> database: validate that all student aren't participating in same tournament again
-        database -->>  tournament: OK
+        database -->> tournament: OK
     else is individual based
-        student -->>  tournament: return student details
+        student_actor ->>  student_class: new Student
+        activate student_class
+        deactivate student_actor
+        student_class ->> tournament: add participant
+        deactivate student_class
     end
 
-    tournament ->> database: Add to database
-    Note right of database: Send confirmation email
-    deactivate student
-    deactivate tournament
+    tournament ->> database: add to database
     deactivate database
+
+    tournament ->> email: send confirmation email
+    activate email
+    deactivate email
+
+    deactivate tournament

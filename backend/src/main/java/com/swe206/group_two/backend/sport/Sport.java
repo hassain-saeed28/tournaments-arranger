@@ -1,5 +1,7 @@
 package com.swe206.group_two.backend.sport;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +37,24 @@ public class Sport {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Sport))
+            return false;
+        Sport sport = (Sport) o;
+        return Objects.equals(this.id, sport.id)
+                && Objects.equals(this.name, sport.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                this.id,
+                this.name);
     }
 
     @Override

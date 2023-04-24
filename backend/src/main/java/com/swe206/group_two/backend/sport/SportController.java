@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,16 +58,17 @@ public class SportController {
         }
     }
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Sport> createSport(@RequestBody Sport sport) {
         try {
-            return new ResponseEntity<Sport>(sportServiceImpl.createSport(sport), HttpStatus.OK);
+            return new ResponseEntity<Sport>(
+                    sportServiceImpl.createSport(sport), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PutMapping("{id}")
+    @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Sport> updateSport(@PathVariable("id") Integer id,
             @RequestBody Sport sport) {
         try {
@@ -75,7 +77,9 @@ public class SportController {
             if (sportData.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                return new ResponseEntity<>(sportServiceImpl.updateSportById(id, sport), HttpStatus.OK);
+                return new ResponseEntity<>(
+                        sportServiceImpl.updateSportById(id, sport),
+                        HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -99,7 +103,8 @@ public class SportController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> deleteSportsById(@PathVariable("id") Integer id) {
+    public ResponseEntity<HttpStatus> deleteSportsById(
+            @PathVariable("id") Integer id) {
         try {
             Optional<Sport> sportData = sportServiceImpl.getSportById(id);
 

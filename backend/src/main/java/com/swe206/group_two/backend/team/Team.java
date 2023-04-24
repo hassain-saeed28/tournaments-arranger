@@ -44,6 +44,10 @@ public class Team {
         return rankId;
     }
 
+    public void setRankId(Integer rankId) {
+        this.rankId = rankId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)

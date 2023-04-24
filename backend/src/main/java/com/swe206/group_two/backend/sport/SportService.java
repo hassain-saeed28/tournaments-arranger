@@ -14,7 +14,7 @@ public interface SportService {
 
     public abstract Sport updateSportById(Integer id, Sport sport);
 
-    public abstract boolean deleteAllSports();
+    public abstract void deleteAllSports();
 
-    public abstract boolean deleteSportById(Integer id);
+    public abstract void deleteSportById(Integer id);
 }

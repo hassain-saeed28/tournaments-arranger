@@ -83,12 +83,34 @@ public class SportController {
     }
 
     @DeleteMapping
-    public void deleteAllSports() {
-        sportServiceImpl.deleteAllSports();
+    public ResponseEntity<HttpStatus> deleteAllSports() {
+        try {
+            List<Sport> sports = sportServiceImpl.getAllSports();
+
+            if (sports.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                sportServiceImpl.deleteAllSports();
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("{id}")
-    public void deleteSportsById(@PathVariable("id") Integer id) {
-        sportServiceImpl.deleteSportById(id);
+    public ResponseEntity<HttpStatus> deleteSportsById(@PathVariable("id") Integer id) {
+        try {
+            Optional<Sport> sportData = sportServiceImpl.getSportById(id);
+
+            if (sportData.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                sportServiceImpl.deleteSportById(id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -37,14 +37,12 @@ public class SportServiceImpl implements SportService {
     }
 
     @Override
-    public boolean deleteAllSports() {
+    public void deleteAllSports() {
         sportRepository.deleteAll();
-        return true;
     }
 
     @Override
-    public boolean deleteSportById(Integer id) {
+    public void deleteSportById(Integer id) {
         sportRepository.deleteById(id);
-        return true;
     }
 }

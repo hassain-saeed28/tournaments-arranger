@@ -44,12 +44,16 @@ public class SportController {
 
     @GetMapping("{id}")
     public ResponseEntity<Sport> getSportById(@PathVariable("id") Integer id) {
-        Optional<Sport> sport = sportServiceImpl.getSportById(id);
+        try {
+            Optional<Sport> sport = sportServiceImpl.getSportById(id);
 
-        if (sport.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(sport.get(), HttpStatus.OK);
+            if (sport.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(sport.get(), HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -65,12 +69,16 @@ public class SportController {
     @PutMapping("{id}")
     public ResponseEntity<Sport> updateSport(@PathVariable("id") Integer id,
             @RequestBody Sport sport) {
-        Optional<Sport> sportData = sportServiceImpl.getSportById(id);
+        try {
+            Optional<Sport> sportData = sportServiceImpl.getSportById(id);
 
-        if (sportData.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(sportServiceImpl.updateSportById(id, sport), HttpStatus.OK);
+            if (sportData.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(sportServiceImpl.updateSportById(id, sport), HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -18,6 +18,7 @@ public class TeamServiceImpl implements TeamService {
         teamRepository.findAll().forEach(teams::add);
         return teams;
     }
+
     @Override
     public Optional<Team> getTeamById(Integer id) {
         return teamRepository.findById(id);

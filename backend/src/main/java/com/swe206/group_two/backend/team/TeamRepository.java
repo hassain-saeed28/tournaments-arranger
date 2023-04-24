@@ -14,6 +14,7 @@ public interface TeamRepository extends JpaRepository<Team, Integer> {
 
     public abstract Optional<Team> findByTournamentId(Integer id);
 
+    @Override
     public abstract <S extends Team> S save(S team);
 
     @Override

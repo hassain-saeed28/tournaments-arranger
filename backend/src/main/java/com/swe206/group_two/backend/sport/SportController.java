@@ -1,6 +1,8 @@
 package com.swe206.group_two.backend.sport;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -24,14 +26,16 @@ public class SportController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Sport>> getAllSports() {
+    public ResponseEntity<Map<String, List<Sport>>> getAllSports() {
         try {
             List<Sport> sports = sportServiceImpl.getAllSports();
 
             if (sports.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
-                return new ResponseEntity<>(sports, HttpStatus.OK);
+                Map<String, List<Sport>> map = new HashMap<>();
+                map.put("data", sports);
+                return new ResponseEntity<>(map, HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -25,6 +25,11 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public List<Team> getTeamsByTournamentId(Integer touramentId) {
+        return teamRepository.findAllByTournamentId(touramentId);
+    }
+
+    @Override
     public Team createTeam(Team team) {
         return teamRepository.save(team);
     }
@@ -38,8 +43,4 @@ public class TeamServiceImpl implements TeamService {
     public void deleteTeamById(Integer id) {
         teamRepository.deleteById(id);
     }
-    public Optional<Team> getTeamByTournamentId(Integer touramentId) {
-        return teamRepository.findByTournamentId(touramentId);
-    }
-
 }

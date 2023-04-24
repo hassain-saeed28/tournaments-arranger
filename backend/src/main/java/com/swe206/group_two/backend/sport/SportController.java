@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -78,9 +79,9 @@ public class SportController {
     public ResponseEntity<Sport> updateSport(@PathVariable("id") Integer id,
             @RequestBody Sport sport) {
         try {
-            Optional<Sport> sportData = sportServiceImpl.getSportById(id);
+            Optional<Sport> _sport = sportServiceImpl.getSportById(id);
 
-            if (sportData.isEmpty()) {
+            if (_sport.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 return new ResponseEntity<>(
@@ -109,12 +110,12 @@ public class SportController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> deleteSportsById(
+    public ResponseEntity<HttpStatus> deleteSportById(
             @PathVariable("id") Integer id) {
         try {
-            Optional<Sport> sportData = sportServiceImpl.getSportById(id);
+            Optional<Sport> sport = sportServiceImpl.getSportById(id);
 
-            if (sportData.isEmpty()) {
+            if (sport.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
                 sportServiceImpl.deleteSportById(id);

@@ -27,9 +27,15 @@ public class SportController {
     }
 
     @GetMapping
-    public ResponseEntity<Map<String, List<Sport>>> getAllSports() {
+    public ResponseEntity<Map<String, List<Sport>>> getAllSports(
+            @RequestParam(name ="name", required = false) String name) {
         try {
-            List<Sport> sports = sportServiceImpl.getAllSports();
+            List<Sport> sports;
+            if (name == null) {
+                sports = sportServiceImpl.getAllSports();
+            } else {
+                sports = sportServiceImpl.getSportByNameContaining(name);
+            }
 
             if (sports.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

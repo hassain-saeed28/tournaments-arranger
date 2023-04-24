@@ -10,7 +10,7 @@ public interface SportRepository extends JpaRepository<Sport, Integer> {
 
     public abstract Optional<Sport> findById(Integer id);
 
-    public abstract List<Sport> getSportByNameContaining(String name);
+    public abstract List<Sport> findByNameContaining(String name);
 
     public abstract void deleteAll();
 

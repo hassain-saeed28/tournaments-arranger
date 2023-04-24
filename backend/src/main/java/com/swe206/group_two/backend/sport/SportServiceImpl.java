@@ -23,7 +23,7 @@ public class SportServiceImpl implements SportService {
     }
 
     public List<Sport> getSportByNameContaining(String name) {
-        return sportRepository.getSportByNameContaining(name);
+        return sportRepository.findByNameContaining(name);
     }
 
     public Sport createSport(Sport sport) {

@@ -55,3 +55,39 @@ CREATE TABLE IF NOT EXISTS users (
     user_email VARCHAR NOT NULL,
     user_password_hash BINARY(128) NOT NULL
 );
+
+SELECT
+    *
+FROM
+    matches
+    INNER JOIN tournaments ON matches.tournament_id = tournaments.tournament_id
+    INNER JOIN participants ON matches.first_participant_id = participants.participant_id
+    AND matches.second_participant_id = participants.participant_id;
+
+SELECT
+    *
+FROM
+    participants
+    INNER JOIN users ON participants.user_id = users.user_id
+    INNER JOIN tournaments ON participants.tournament_id = tournaments.tournament_id
+    INNER JOIN teams ON participants.team_id = teams.team_id;
+
+SELECT
+    *
+FROM
+    ranks
+    INNER JOIN tournaments ON ranks.tournament_id = tournaments.tournament_id
+    INNER JOIN participants ON ranks.participant_id = participants.participant_id;
+
+SELECT
+    *
+FROM
+    teams
+    INNER JOIN tournaments ON teams.tournament_id = tournaments.tournament_id
+    INNER JOIN ranks ON teams.rank_id = ranks.rank_id;
+
+SELECT
+    *
+FROM
+    tournaments
+    INNER JOIN sports ON sports.sport_id = tournaments.sport_id;

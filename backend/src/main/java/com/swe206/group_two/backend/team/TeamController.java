@@ -57,33 +57,6 @@ public class TeamController {
         }
     }
 
-    @GetMapping("{tournamentId}")
-    public ResponseEntity<Team> getTeamByTournamentId(@PathVariable("tournament_id") Integer TouramentId) {
-        try {
-            Optional<Team> teams = teamServiceImpl.getTeamByTournamentId(TouramentId);
-
-            if (teams.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            } else {
-                return new ResponseEntity<>(teams.get(), HttpStatus.OK);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Team> createTeam(@RequestBody Team team) {
-        try {
-            // TODO: validate that the tournament and rank exist
-
-            return new ResponseEntity<Team>(
-                    teamServiceImpl.createTeam(team), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteAllTeams() {
         try {

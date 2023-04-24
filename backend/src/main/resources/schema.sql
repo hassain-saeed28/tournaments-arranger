@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS teams (
 CREATE TABLE IF NOT EXISTS tournaments (
     tournament_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     tournament_name VARCHAR NOT NULL,
-    tournament_type VARCHAR(11) CHECK (tournament_type IN ('Elimination', 'RoundRobin')) NOT NULL,
-    tournament_based VARCHAR(10) CHECK (tournament_based IN ('Team', 'Individual')) NOT NULL,
+    tournament_type VARCHAR CHECK (tournament_type IN ('Elimination', 'RoundRobin')) NOT NULL,
+    tournament_based VARCHAR CHECK (tournament_based IN ('Team', 'Individual')) NOT NULL,
     sport_id INT NOT NULL,
     team_max_student INT NOT NULL,
     days_between_stages INT NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS tournaments (
 CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     user_name VARCHAR NOT NULL,
-    user_role VARCHAR(7) CHECK (user_role IN ('Admin', 'Student')) NOT NULL,
+    user_role VARCHAR CHECK (user_role IN ('Admin', 'Student')) NOT NULL,
     user_email VARCHAR NOT NULL,
     user_password_hash BINARY(128) NOT NULL
 );

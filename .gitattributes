@@ -1,2 +1,2 @@
-mvnw linguist-vendored=false
-mvnw.cmd linguist-vendored=false
+backend/mvnw linguist-vendored
+backend/mvnw.cmd linguist-vendored

@@ -1,1 +1,2 @@
-mvnw* linguist-vendored=false
+mvnw linguist-vendored=false
+mvnw.cmd linguist-vendored=false

@@ -20,7 +20,7 @@ public class Team {
     @Column(name = "tournament_id", nullable = false)
     private Integer tournamentId;
 
-    @Column(name = "rank_id") // TODO: get current rank
+    @Column(name = "rank_id", nullable = false) // TODO: get current rank
     private Integer rankId;
 
     public Team() {

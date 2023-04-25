@@ -71,7 +71,7 @@ VALUES
     (3, 1, 1, NULL),
     (4, 1, 1, NULL),
     (5, 1, 1, NULL),
-    (2, 1, 1, NULL),
+    (6, 1, 1, NULL),
     (2, 2, NULL, 0),
     (3, 2, NULL, 0),
     (4, 2, NULL, 0),
@@ -86,6 +86,12 @@ VALUES
 INSERT INTO
     ranks (tournament_id, participant_id, current_rank)
 VALUES
+    (1, NULL, NULL),
+    (1, 2, NULL),
+    (1, 3, NULL),
+    (1, 4, NULL),
+    (1, 5, NULL),
+    (1, 6, NULL),
     (3, 11, 1),
     (3, 12, 2),
     (3, 13, 3),
@@ -103,7 +109,7 @@ VALUES
 INSERT INTO
     teams (tournament_id, rank_id)
 VALUES
-    (1, NULL);
+    (1, 1);
 
 -- tournaments
 INSERT INTO

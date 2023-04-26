@@ -39,10 +39,9 @@ public class Match {
     public Match() {
     }
 
-    public Match(Integer id, Integer tournamentId, Integer firstParticipantId,
+    public Match(Integer tournamentId, Integer firstParticipantId,
             Integer secondParticipantId, Integer firstParticipantScores,
             Integer secondParticipantScores, Date matchDate) {
-        this.id = id;
         this.tournamentId = tournamentId;
         this.firstParticipantId = firstParticipantId;
         this.secondParticipantId = secondParticipantId;

@@ -23,18 +23,17 @@ public class Participant {
     @Column(name = "tournament_id", nullable = false)
     private Integer tournamentId;
 
-    @Column(name = "team_id", nullable = false)
+    @Column(name = "team_id")
     private Integer teamId;
 
-    @Column(name = "participant_current_points", nullable = false)
+    @Column(name = "participant_current_points")
     private Integer participantCurrentPoints;
 
     public Participant() {
     }
 
-    public Participant(Integer id, Integer userId, Integer tournamentId,
-            Integer teamId, Integer participantCurrentPoints) {
-        this.id = id;
+    public Participant(Integer userId, Integer tournamentId, Integer teamId,
+            Integer participantCurrentPoints) {
         this.userId = userId;
         this.tournamentId = tournamentId;
         this.participantCurrentPoints = participantCurrentPoints;

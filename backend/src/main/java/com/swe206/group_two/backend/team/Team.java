@@ -17,6 +17,9 @@ public class Team {
     @Column(name = "team_id", nullable = false)
     private Integer id;
 
+    @Column(name = "team_name", nullable = false)
+    private String name;
+
     @Column(name = "tournament_id", nullable = false)
     private Integer tournamentId;
 
@@ -26,14 +29,22 @@ public class Team {
     public Team() {
     }
 
-    public Team(Integer id, Integer tournamentId, Integer rankId) {
-        this.id = id;
+    public Team(String name, Integer tournamentId, Integer rankId) {
+        this.name = name;
         this.tournamentId = tournamentId;
         this.rankId = rankId;
     }
 
     public Integer getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getTournamentId() {
@@ -44,10 +55,6 @@ public class Team {
         return rankId;
     }
 
-    public void setRankId(Integer rankId) {
-        this.rankId = rankId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -56,6 +63,7 @@ public class Team {
             return false;
         Team team = (Team) o;
         return Objects.equals(this.id, team.id)
+                && Objects.equals(this.name, team.name)
                 && Objects.equals(this.tournamentId, team.tournamentId)
                 && Objects.equals(this.rankId, team.rankId);
     }
@@ -64,6 +72,7 @@ public class Team {
     public int hashCode() {
         return Objects.hash(
                 this.id,
+                this.name,
                 this.tournamentId,
                 this.rankId);
     }
@@ -72,6 +81,7 @@ public class Team {
     public String toString() {
         return "Team{"
                 + "id=" + this.id + ", "
+                + "name='" + this.name + "', "
                 + "tournamentId=" + this.tournamentId + ", "
                 + "rankId=" + this.rankId + ""
                 + '}';

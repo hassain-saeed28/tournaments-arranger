@@ -3,13 +3,15 @@ package com.swe206.group_two.backend.tournament;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.swe206.group_two.backend.sport.Sport;
 import com.swe206.group_two.backend.utils.TournamentBased;
 import com.swe206.group_two.backend.utils.TournamentType;
 
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,8 +40,10 @@ public class Tournament {
     @Column(name = "tournament_based", nullable = false)
     private TournamentBased based;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn(name = "sport_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sport_id")
+    @JsonUnwrapped(prefix = "sport_")
+    @JsonIgnoreProperties("id")
     private Sport sport;
 
     @Column(name = "team_max_student", nullable = false)
@@ -49,15 +53,15 @@ public class Tournament {
     private int daysBetweenStages;
 
     @Column(name = "tournament_is_archived", nullable = false)
-    private boolean archived;
+    private boolean archive;
 
     @Column(name = "tournament_is_open", nullable = false)
     private boolean open;
 
-    @Column(name = "tournament_start_date", columnDefinition = "DATE", nullable = false)
+    @Column(name = "tournament_start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column(name = "tournament_end_date", columnDefinition = "DATE", nullable = false)
+    @Column(name = "tournament_end_date", nullable = false)
     private LocalDate endDate;
 
     public Tournament() {
@@ -65,7 +69,7 @@ public class Tournament {
 
     public Tournament(String name, TournamentType type, TournamentBased based,
             Sport sport, int maxStudent, int daysBetweenStages,
-            boolean isArchived, boolean isOpen, LocalDate startDate,
+            boolean archive, boolean open, LocalDate startDate,
             LocalDate endDate) {
         this.name = name;
         this.type = type;
@@ -73,8 +77,8 @@ public class Tournament {
         this.sport = sport;
         this.maxStudent = maxStudent;
         this.daysBetweenStages = daysBetweenStages;
-        this.archived = isArchived;
-        this.open = isOpen;
+        this.archive = archive;
+        this.open = open;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -108,11 +112,11 @@ public class Tournament {
     }
 
     public boolean isArchive() {
-        return archived;
+        return archive;
     }
 
     public void setArchive(boolean archived) {
-        this.archived = archived;
+        this.archive = archived;
     }
 
     public boolean isOpen() {
@@ -145,7 +149,7 @@ public class Tournament {
                 && Objects.equals(this.sport, tournament.sport)
                 && Objects.equals(this.maxStudent, tournament.maxStudent)
                 && Objects.equals(this.daysBetweenStages, tournament.daysBetweenStages)
-                && Objects.equals(this.archived, tournament.archived)
+                && Objects.equals(this.archive, tournament.archive)
                 && Objects.equals(this.open, tournament.open)
                 && Objects.equals(this.startDate, tournament.startDate)
                 && Objects.equals(this.endDate, tournament.endDate);
@@ -161,7 +165,7 @@ public class Tournament {
                 this.type,
                 this.maxStudent,
                 this.daysBetweenStages,
-                this.archived,
+                this.archive,
                 this.open,
                 this.startDate,
                 this.endDate);
@@ -177,7 +181,7 @@ public class Tournament {
                 + "sport='" + this.sport + "'', "
                 + "maxStudent=" + this.maxStudent + ", "
                 + "daysBetweenStages=" + this.daysBetweenStages + ", "
-                + "isArchived=" + this.archived + ", "
+                + "isArchived=" + this.archive + ", "
                 + "isOpen=" + this.open + ", "
                 + "startDate='" + this.startDate + "', "
                 + "endDate='" + this.endDate + "'"

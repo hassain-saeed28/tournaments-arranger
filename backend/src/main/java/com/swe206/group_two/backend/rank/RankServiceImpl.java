@@ -25,6 +25,11 @@ public class RankServiceImpl implements RankService {
     }
 
     @Override
+    public List<Rank> getAllByTournamentId(Integer id) {
+        return rankRepository.findAllByTournamentId(id);
+    }
+
+    @Override
     public Rank createRank(Rank rank) {
         return rankRepository.save(rank);
     }

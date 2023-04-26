@@ -12,6 +12,8 @@ public interface RankRepository extends JpaRepository<Rank, Integer> {
     @Override
     public abstract Optional<Rank> findById(Integer id);
 
+    public abstract List<Rank> findAllByTournamentId(Integer id);
+
     @Override
     public abstract <S extends Rank> S save(S rank);
 
@@ -20,5 +22,4 @@ public interface RankRepository extends JpaRepository<Rank, Integer> {
 
     @Override
     public abstract void deleteById(Integer id);
-
 }

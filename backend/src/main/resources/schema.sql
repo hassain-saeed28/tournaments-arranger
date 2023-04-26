@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS sports (
 
 CREATE TABLE IF NOT EXISTS teams (
     team_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    team_name VARCHAR NOT NULL,
     tournament_id INT NOT NULL,
     rank_id INT NOT NULL
 );
@@ -52,7 +53,7 @@ CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     user_name VARCHAR NOT NULL,
     user_role VARCHAR CHECK (user_role IN ('Admin', 'Student')) NOT NULL,
-    user_email VARCHAR NOT NULL,
+    user_email VARCHAR UNIQUE NOT NULL,
     user_password_hash BINARY(128) NOT NULL
 );
 
@@ -90,4 +91,4 @@ SELECT
     *
 FROM
     tournaments
-    INNER JOIN sports ON sports.sport_id = tournaments.sport_id;
+    INNER JOIN sports ON tournaments.sport_id = sports.sport_id;

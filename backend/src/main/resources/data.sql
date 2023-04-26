@@ -107,9 +107,9 @@ VALUES
 
 -- teams
 INSERT INTO
-    teams (tournament_id, rank_id)
+    teams (team_name, tournament_id, rank_id)
 VALUES
-    (1, 1);
+    ('Awesome Team', 1, 1);
 
 -- tournaments
 INSERT INTO

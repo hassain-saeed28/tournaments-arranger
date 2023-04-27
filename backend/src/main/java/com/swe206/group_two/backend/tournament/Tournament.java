@@ -11,7 +11,7 @@ import com.swe206.group_two.backend.utils.TournamentType;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,7 +40,7 @@ public class Tournament {
     @Column(name = "tournament_based", nullable = false)
     private TournamentBased based;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sport_id")
     @JsonUnwrapped(prefix = "sport_")
     @JsonIgnoreProperties("id")

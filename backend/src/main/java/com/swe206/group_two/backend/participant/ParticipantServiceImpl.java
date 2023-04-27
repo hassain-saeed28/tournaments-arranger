@@ -25,6 +25,11 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
+    public List<Participant> getAllParticipantsByTournamentId(Integer id) {
+        return participantRepository.findAllByTournamentId(id);
+    }
+
+    @Override
     public void deleteAllParticipants() {
         participantRepository.deleteAll();
     }

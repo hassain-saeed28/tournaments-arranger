@@ -71,7 +71,7 @@ public class TournamentController {
     public ResponseEntity<Map<String, List<Team>>> getAllTeamsByTournamentId(
             @PathVariable("id") Integer id) {
         try {
-            List<Team> teams = teamServiceImpl.getTeamsByTournamentId(id);
+            List<Team> teams = teamServiceImpl.getAllTeamsByTournamentId(id);
 
             if (teams.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);

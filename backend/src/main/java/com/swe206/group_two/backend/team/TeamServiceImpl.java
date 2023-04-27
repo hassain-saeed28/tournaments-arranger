@@ -25,7 +25,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public List<Team> getTeamsByTournamentId(Integer touramentId) {
+    public List<Team> getAllTeamsByTournamentId(Integer touramentId) {
         return teamRepository.findAllByTournamentId(touramentId);
     }
 

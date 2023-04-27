@@ -8,7 +8,7 @@ public interface TeamService {
 
     public abstract Optional<Team> getTeamById(Integer id);
 
-    public abstract List<Team> getTeamsByTournamentId(Integer tournamentId);
+    public abstract List<Team> getAllTeamsByTournamentId(Integer tournamentId);
 
     public abstract Team createTeam(Team team);
 

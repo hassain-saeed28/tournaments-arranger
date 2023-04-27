@@ -8,16 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.swe206.group_two.backend.sport.SportRepository;
-import com.swe206.group_two.backend.team.Team;
-import com.swe206.group_two.backend.team.TeamRepository;
 
 @Service
 public class TournamentServiceImpl implements TournamentService {
     @Autowired
     private TournamentRepository tournamentRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
 
     @Autowired
     private SportRepository sportRepository;
@@ -31,10 +26,6 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public Optional<Tournament> getTournamentById(Integer id) {
         return tournamentRepository.findById(id);
-    }
-
-    public List<Team> getAllTeamsByTournamentId(Integer id) {
-        return teamRepository.findAllByTournamentId(id);
     }
 
     @Override

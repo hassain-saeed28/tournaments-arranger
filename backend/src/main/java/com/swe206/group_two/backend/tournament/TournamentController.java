@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -137,26 +138,24 @@ public class TournamentController {
     // }
     // }
 
-    // @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    // public ResponseEntity<Tournament> updateTournament(
-    // @PathVariable("id") Integer id,
-    // @RequestBody TournamentDTO tournamentDTO) {
-    // try {
-    // Optional<Tournament> _tournament = tournamentServiceImpl
-    // .getTournamentById(id);
+    @PatchMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Tournament> partialUpdateTournametn(
+            @PathVariable("id") Integer id,
+            @RequestBody TournamentDTO tournamentDTO) {
+        try {
+            Optional<Tournament> _tournament = tournamentServiceImpl.getTournamentById(id);
 
-    // if (_tournament.isEmpty()) {
-    // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    // } else {
-    // return new ResponseEntity<>(
-    // tournamentServiceImpl.updateTournamentById(
-    // id, tournamentDTO),
-    // HttpStatus.OK);
-    // }
-    // } catch (Exception e) {
-    // return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
-    // }
+            if (_tournament.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(
+                        tournamentServiceImpl.updateTournamentById(id, tournamentDTO),
+                        HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteAllTournaments() {

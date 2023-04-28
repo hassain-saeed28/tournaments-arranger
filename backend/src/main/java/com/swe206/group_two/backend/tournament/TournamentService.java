@@ -10,8 +10,7 @@ public interface TournamentService {
 
     public abstract Tournament createTournament(TournamentDTO tournament);
 
-    // public abstract Tournament updateTournamentById(Integer id, TournamentDTO
-    // tournamentDTO);
+    public abstract Tournament updateTournamentById(Integer id, TournamentDTO tournamentDTO);
 
     public abstract void deleteAllTournament();
 

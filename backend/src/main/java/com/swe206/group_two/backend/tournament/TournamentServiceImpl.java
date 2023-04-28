@@ -34,14 +34,13 @@ public class TournamentServiceImpl implements TournamentService {
                 sportRepository.findById(tournamentDTO.getSportId()).get()));
     }
 
-    // @Override
-    // public Tournament updateTournamentById(Integer id, TournamentDTO
-    // tournamentDTO) {
-    // Tournament _tournament = tournamentRepository.findById(id).get();
-    // _tournament.setArchive(tournamentDTO.isArchive());
-    // _tournament.setOpen(tournamentDTO.isOpen());
-    // return tournamentRepository.save(_tournament);
-    // }
+    @Override
+    public Tournament updateTournamentById(Integer id, TournamentDTO tournamentDTO) {
+        Tournament _tournament = tournamentRepository.findById(id).get();
+        _tournament.setArchive(tournamentDTO.isArchive());
+        _tournament.setOpen(tournamentDTO.isOpen());
+        return tournamentRepository.save(_tournament);
+    }
 
     @Override
     public void deleteAllTournament() {

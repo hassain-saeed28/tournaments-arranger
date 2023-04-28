@@ -12,24 +12,36 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.swe206.group_two.backend.match.MatchServiceImpl;
+import com.swe206.group_two.backend.participant.ParticipantServiceImpl;
+import com.swe206.group_two.backend.rank.RankServiceImpl;
 import com.swe206.group_two.backend.team.Team;
 import com.swe206.group_two.backend.team.TeamServiceImpl;
+import com.swe206.group_two.backend.utils.JsonMappers;
 
 @RestController
 @RequestMapping("/api/tournaments")
 public class TournamentController {
     private final TournamentServiceImpl tournamentServiceImpl;
     private final TeamServiceImpl teamServiceImpl;
+    private final RankServiceImpl rankServiceImpl;
+    private final ParticipantServiceImpl participantServiceImpl;
+    private final MatchServiceImpl matchServiceImpl;
 
     public TournamentController(TournamentServiceImpl tournamentServiceImpl,
-            TeamServiceImpl teamServiceImpl) {
+            TeamServiceImpl teamServiceImpl,
+            RankServiceImpl rankServiceImpl,
+            ParticipantServiceImpl participantServiceImpl,
+            MatchServiceImpl matchServiceImpl) {
         this.tournamentServiceImpl = tournamentServiceImpl;
         this.teamServiceImpl = teamServiceImpl;
+        this.rankServiceImpl = rankServiceImpl;
+        this.participantServiceImpl = participantServiceImpl;
+        this.matchServiceImpl = matchServiceImpl;
     }
 
     @GetMapping
@@ -51,16 +63,21 @@ public class TournamentController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Tournament> getTournamentById(
+    public ResponseEntity<?> getTournamentById(
             @PathVariable("id") Integer id) {
         try {
-            Optional<Tournament> tournament = tournamentServiceImpl
+            Optional<Tournament> _tournament = tournamentServiceImpl
                     .getTournamentById(id);
 
-            if (tournament.isEmpty()) {
+            if (_tournament.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                return new ResponseEntity<>(tournament.get(), HttpStatus.OK);
+                Tournament tournament = _tournament.get();
+                JsonMappers json = new JsonMappers(tournament);
+                json.put("ranks", rankServiceImpl.getAllByTournamentId(id));
+                json.put("participants", participantServiceImpl.getAllParticipantsByTournamentId(id));
+                json.put("matches", matchServiceImpl.getMatchesByTournamentId(id));
+                return new ResponseEntity<>(json.getJson(), HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

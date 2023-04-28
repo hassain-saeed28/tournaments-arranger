@@ -24,4 +24,11 @@ public class EmailServiceImpl implements EmailService {
 
         mailSender.send(message);
     }
+
+    public void sendConfirmationMail(String to, String tournamentName) {
+        String subject = "Registration Confirmation";
+        String body = "You have been successfully registered in tournament " + tournamentName;
+
+        sendMail(new EmailDetails(to, subject, body));
+    }
 }

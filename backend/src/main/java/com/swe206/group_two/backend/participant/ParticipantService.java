@@ -10,6 +10,8 @@ public interface ParticipantService {
 
     public List<Participant> getAllParticipantsByTournamentId(Integer id);
 
+    public Participant createParticipant(Participant participant);
+
     public abstract void deleteAllParticipants();
 
     public abstract void deleteParticipantById(Integer id);

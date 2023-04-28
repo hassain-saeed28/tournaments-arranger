@@ -29,6 +29,10 @@ public class ParticipantServiceImpl implements ParticipantService {
         return participantRepository.findAllByTournamentId(id);
     }
 
+    public Participant createParticipant(Participant participant) {
+        return participantRepository.save(participant);
+    }
+
     @Override
     public void deleteAllParticipants() {
         participantRepository.deleteAll();

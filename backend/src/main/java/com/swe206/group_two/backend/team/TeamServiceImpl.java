@@ -7,8 +7,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.swe206.group_two.backend.email.EmailServiceImpl;
 import com.swe206.group_two.backend.participant.Participant;
-import com.swe206.group_two.backend.participant.ParticipantRepository;
+import com.swe206.group_two.backend.participant.ParticipantServiceImpl;
+import com.swe206.group_two.backend.tournament.TournamentServiceImpl;
+import com.swe206.group_two.backend.user.UserServiceImpl;
 
 @Service
 public class TeamServiceImpl implements TeamService {
@@ -16,7 +19,16 @@ public class TeamServiceImpl implements TeamService {
     private TeamRepository teamRepository;
 
     @Autowired
-    private ParticipantRepository participantRepository;
+    private EmailServiceImpl emailServiceImpl;
+
+    @Autowired
+    private ParticipantServiceImpl participantServiceImpl;
+
+    @Autowired
+    private UserServiceImpl userServiceImpl;
+
+    @Autowired
+    private TournamentServiceImpl tournamentServiceImpl;
 
     @Override
     public List<Team> getAllTeams() {
@@ -39,8 +51,12 @@ public class TeamServiceImpl implements TeamService {
     public Team createTeam(Team team, List<Integer> usersIds) {
         Team _team = teamRepository.save(team);
         for (Integer userId : usersIds) {
-            participantRepository.save(new Participant(
+            participantServiceImpl.createParticipant(new Participant(
                     userId, team.getTournamentId(), team.getId(), null));
+            emailServiceImpl.sendConfirmationMail(
+                    userServiceImpl.getUserById(userId).get().getEmail(),
+                    tournamentServiceImpl.getTournamentById(
+                            team.getTournamentId()).get().getName());
         }
         return _team;
     }

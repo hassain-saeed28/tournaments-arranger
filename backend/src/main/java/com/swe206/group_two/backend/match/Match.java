@@ -1,6 +1,6 @@
 package com.swe206.group_two.backend.match;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -34,14 +34,14 @@ public class Match {
     private Integer secondParticipantScores;
 
     @Column(name = "match_date", nullable = false)
-    private Date matchDate;
+    private LocalDate matchDate;
 
     public Match() {
     }
 
     public Match(Integer tournamentId, Integer firstParticipantId,
             Integer secondParticipantId, Integer firstParticipantScores,
-            Integer secondParticipantScores, Date matchDate) {
+            Integer secondParticipantScores, LocalDate matchDate) {
         this.tournamentId = tournamentId;
         this.firstParticipantId = firstParticipantId;
         this.secondParticipantId = secondParticipantId;
@@ -82,11 +82,11 @@ public class Match {
         this.secondParticipantScores = secondParticipantScores;
     }
 
-    public Date getMatchDate() {
+    public LocalDate getMatchDate() {
         return matchDate;
     }
 
-    public void setMatchDate(Date matchDate) {
+    public void setMatchDate(LocalDate matchDate) {
         this.matchDate = matchDate;
     }
 

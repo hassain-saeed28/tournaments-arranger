@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.swe206.group_two.backend.match.MatchServiceImpl;
 import com.swe206.group_two.backend.participant.ParticipantServiceImpl;
+import com.swe206.group_two.backend.rank.Rank;
 import com.swe206.group_two.backend.rank.RankServiceImpl;
 import com.swe206.group_two.backend.team.Team;
+import com.swe206.group_two.backend.team.TeamDTO;
 import com.swe206.group_two.backend.team.TeamServiceImpl;
 import com.swe206.group_two.backend.utils.JsonMappers;
 
@@ -116,27 +118,29 @@ public class TournamentController {
         }
     }
 
-    // @PostMapping(path = "{id}/teams", produces =
-    // MediaType.APPLICATION_JSON_VALUE)
-    // public ResponseEntity<Team> createTeamByTournamentId(
-    // @PathVariable("id") Integer id,
-    // @RequestBody Team team) {
-    // try {
-    // Optional<Tournament> tournament = tournamentServiceImpl
-    // .getTournamentById(id);
+    @PostMapping(path = "{id}/teams", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Team> createTeamByTournamentId(
+            @PathVariable("id") Integer id,
+            @RequestBody TeamDTO teamDTO) {
+        try {
+            Optional<Tournament> tournament = tournamentServiceImpl
+                    .getTournamentById(id);
 
-    // if (tournament.isEmpty()) {
-    // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    // } else {
-    // List<Team> teams = teamServiceImpl.getTeamsByTournamentId(id);
-
-    // return new ResponseEntity<>(
-    // teamServiceImpl.createTeam(team), HttpStatus.OK);
-    // }
-    // } catch (Exception e) {
-    // return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
-    // }
+            if (tournament.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                Rank rank = rankServiceImpl.createRank(
+                        new Rank(id, null, null));
+                return new ResponseEntity<>(
+                        teamServiceImpl.createTeam(
+                                new Team(teamDTO.getName(), id, rank.getId()),
+                                teamDTO.getUsersIds()),
+                        HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PatchMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Tournament> partialUpdateTournametn(

@@ -7,10 +7,16 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.swe206.group_two.backend.participant.Participant;
+import com.swe206.group_two.backend.participant.ParticipantRepository;
+
 @Service
 public class TeamServiceImpl implements TeamService {
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     @Override
     public List<Team> getAllTeams() {
@@ -30,8 +36,13 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Team createTeam(Team team) {
-        return teamRepository.save(team);
+    public Team createTeam(Team team, List<Integer> usersIds) {
+        Team _team = teamRepository.save(team);
+        for (Integer userId : usersIds) {
+            participantRepository.save(new Participant(
+                    userId, team.getTournamentId(), team.getId(), null));
+        }
+        return _team;
     }
 
     @Override

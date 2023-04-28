@@ -10,7 +10,7 @@ public interface TeamService {
 
     public abstract List<Team> getAllTeamsByTournamentId(Integer tournamentId);
 
-    public abstract Team createTeam(Team team);
+    public abstract Team createTeam(Team team, List<Integer> usersIds);
 
     public abstract void deleteAllTeams();
 

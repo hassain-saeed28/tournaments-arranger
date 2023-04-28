@@ -44,8 +44,8 @@ public class MatchServiceImpl implements MatchService {
         matchRepository.deleteById(id);
     }
 
-    @Override
-    public void changeMatchPoints(Integer points) {
-        matchRepository.setPoints(points);
-    }
+    // @Override
+    // public void changeMatchPoints(Integer points) {
+    //     matchRepository.setPoints(points);
+    // }
 }

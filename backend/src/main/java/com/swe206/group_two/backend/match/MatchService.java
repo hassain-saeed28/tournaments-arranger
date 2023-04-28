@@ -20,5 +20,5 @@ public interface MatchService {
 
     // public abstract List<Match> generateMatches();
 
-    public abstract void changeMatchPoints(Integer points);
+    // public abstract void changeMatchPoints(Integer points);
 }

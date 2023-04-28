@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MatchService {
-    public abstract List<Match> getAllMatchs();
+    public abstract List<Match> getAllMatches();
 
     public abstract Optional<Match> getMatchById(Integer id);
 

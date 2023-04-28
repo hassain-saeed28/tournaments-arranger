@@ -13,7 +13,7 @@ public class MatchServiceImpl implements MatchService {
     private MatchRepository matchRepository;
 
     @Override
-    public List<Match> getAllMatchs() {
+    public List<Match> getAllMatches() {
         List<Match> matches = new ArrayList<>();
         matchRepository.findAll().forEach(matches::add);
         return matches;
@@ -46,6 +46,6 @@ public class MatchServiceImpl implements MatchService {
 
     // @Override
     // public void changeMatchPoints(Integer points) {
-    //     matchRepository.setPoints(points);
+    // matchRepository.setPoints(points);
     // }
 }

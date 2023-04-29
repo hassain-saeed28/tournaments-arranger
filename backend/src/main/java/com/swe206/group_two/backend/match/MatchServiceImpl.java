@@ -44,6 +44,14 @@ public class MatchServiceImpl implements MatchService {
         matchRepository.deleteById(id);
     }
 
+    @Override
+    public void setMatchScoreById(Integer id,
+            Integer firstParticipantScores, Integer secondParticipantScores) {
+        Match match = matchRepository.findById(id).get();
+        match.setFirstParticipantScores(firstParticipantScores);
+        match.setSecondParticipantScores(secondParticipantScores);
+    }
+
     // @Override
     // public void changeMatchPoints(Integer points) {
     // matchRepository.setPoints(points);

@@ -69,9 +69,6 @@ INSERT INTO
 VALUES
     (2, 1, 1, NULL),
     (3, 1, 1, NULL),
-    (4, 1, 1, NULL),
-    (5, 1, 1, NULL),
-    (6, 1, 1, NULL),
     (2, 2, NULL, 0),
     (3, 2, NULL, 0),
     (4, 2, NULL, 0),
@@ -89,9 +86,6 @@ VALUES
     (1, NULL, NULL),
     (1, 2, NULL),
     (1, 3, NULL),
-    (1, 4, NULL),
-    (1, 5, NULL),
-    (1, 6, NULL),
     (3, 11, 1),
     (3, 12, 2),
     (3, 13, 3),
@@ -101,7 +95,7 @@ VALUES
 INSERT INTO
     sports (sport_name)
 VALUES
-    ('Basketball'),
+    ('Rocket League'),
     ('Call of Duty: Black Ops'),
     ('Fifa');
 
@@ -127,11 +121,11 @@ INSERT INTO
     )
 VALUES
     (
-        'Basketball Elimination Team Tournament',
+        'Rocket League Elimination Team Tournament',
         'Elimination',
         'Team',
         1,
-        5,
+        2,
         7,
         false,
         true,

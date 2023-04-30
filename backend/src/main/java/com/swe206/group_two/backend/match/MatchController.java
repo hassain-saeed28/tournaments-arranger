@@ -49,9 +49,9 @@ public class MatchController {
         if (_match.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            Match match = _match.get();
-            match.setFirstParticipantScores(matchDTO.getFirstParticipantScores());
-            match.setSecondParticipantScores(matchDTO.getSecondParticipantScores());
+            Match match = matchServiceImpl.setMatchScoreById(id,
+                    matchDTO.getFirstParticipantScores(),
+                    matchDTO.getSecondParticipantScores());
             return new ResponseEntity<Match>(match, HttpStatus.OK);
         }
     }

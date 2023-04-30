@@ -45,15 +45,11 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public void setMatchScoreById(Integer id,
+    public Match setMatchScoreById(Integer id,
             Integer firstParticipantScores, Integer secondParticipantScores) {
         Match match = matchRepository.findById(id).get();
         match.setFirstParticipantScores(firstParticipantScores);
         match.setSecondParticipantScores(secondParticipantScores);
+        return matchRepository.save(match);
     }
-
-    // @Override
-    // public void changeMatchPoints(Integer points) {
-    // matchRepository.setPoints(points);
-    // }
 }

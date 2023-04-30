@@ -19,5 +19,5 @@ public interface MatchService {
     public abstract Match setMatchScoreById(Integer id,
             Integer firstParticipantScores, Integer secondParticipantScores);
 
-    // public abstract List<Match> generateMatches();
+    public abstract List<Match> generateMatches(Integer tournamentId);
 }

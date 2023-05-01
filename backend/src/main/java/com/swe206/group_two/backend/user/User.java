@@ -1,5 +1,6 @@
 package com.swe206.group_two.backend.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swe206.group_two.backend.utils.UserRole;
 
 import jakarta.persistence.Column;
@@ -29,6 +30,7 @@ public class User {
     @Column(name = "user_email", nullable = false)
     private String email;
 
+    @JsonIgnore
     @Column(name = "user_password_hash", nullable = false)
     private String passwordHash;
 
@@ -60,5 +62,15 @@ public class User {
 
     public String getPasswordHash() {
         return passwordHash;
+    }
+
+    @Override
+    public String toString() {
+        return "User{"
+                + "id=" + id + ", "
+                + "name=" + name + ", "
+                + "role=" + role + ", "
+                + "email=" + email + ""
+                + "}";
     }
 }

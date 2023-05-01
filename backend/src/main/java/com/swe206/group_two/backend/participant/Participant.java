@@ -90,7 +90,7 @@ public class Participant {
 
     @Override
     public String toString() {
-        return "Rank{"
+        return "Participant{"
                 + "id=" + this.id + ", "
                 + "userId=" + this.userId + ", "
                 + "tournamentId=" + this.tournamentId + ", "

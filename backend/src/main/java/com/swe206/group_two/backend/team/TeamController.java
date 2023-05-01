@@ -13,13 +13,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.swe206.group_two.backend.participant.ParticipantServiceImpl;
+import com.swe206.group_two.backend.utils.JsonMappers;
+
 @RestController
 @RequestMapping("/api/teams")
 public class TeamController {
     private final TeamServiceImpl teamServiceImpl;
+    private final ParticipantServiceImpl participantServiceImpl;
 
-    public TeamController(TeamServiceImpl teamServiceImpl) {
+    public TeamController(TeamServiceImpl teamServiceImpl,
+            ParticipantServiceImpl participantServiceImpl) {
         this.teamServiceImpl = teamServiceImpl;
+        this.participantServiceImpl = participantServiceImpl;
     }
 
     @GetMapping
@@ -40,14 +46,18 @@ public class TeamController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Team> getTeamById(@PathVariable("id") Integer id) {
+    public ResponseEntity<Map<String, Object>> getTeamById(@PathVariable("id") Integer id) {
         try {
-            Optional<Team> teams = teamServiceImpl.getTeamById(id);
+            Optional<Team> _team = teamServiceImpl.getTeamById(id);
 
-            if (teams.isEmpty()) {
+            if (_team.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                return new ResponseEntity<>(teams.get(), HttpStatus.OK);
+                Team team = _team.get();
+                JsonMappers json = new JsonMappers(team);
+                json.put("participants", participantServiceImpl
+                        .getAllParticipantsByTournamentId(id));
+                return new ResponseEntity<>(json.getJson(), HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

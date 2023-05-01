@@ -29,6 +29,12 @@ public class ParticipantServiceImpl implements ParticipantService {
         return participantRepository.findAllByTournamentId(id);
     }
 
+    @Override
+    public List<Participant> getAllParticipantsByTeamId(Integer id) {
+        return participantRepository.findAllByTeamId(id);
+    }
+
+    @Override
     public Participant createParticipant(Participant participant) {
         return participantRepository.save(participant);
     }

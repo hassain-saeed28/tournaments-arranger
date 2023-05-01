@@ -14,6 +14,8 @@ public interface ParticipantRepository extends JpaRepository<Participant, Intege
 
     public abstract List<Participant> findAllByTournamentId(Integer id);
 
+    public abstract List<Participant> findAllByTeamId(Integer id);
+
     @Override
     public abstract <S extends Participant> S save(S participant);
 

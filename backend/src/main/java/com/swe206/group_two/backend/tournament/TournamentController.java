@@ -77,7 +77,7 @@ public class TournamentController {
             } else {
                 Tournament tournament = _tournament.get();
                 JsonMappers json = new JsonMappers(tournament);
-                json.put("ranks", rankServiceImpl.getAllByTournamentId(id));
+                json.put("ranks", rankServiceImpl.getAllRanksByTournamentId(id));
                 json.put("participants", participantServiceImpl.getAllParticipantsByTournamentId(id));
                 json.put("matches", matchServiceImpl.getMatchesByTournamentId(id));
                 return new ResponseEntity<>(json.getJson(), HttpStatus.OK);

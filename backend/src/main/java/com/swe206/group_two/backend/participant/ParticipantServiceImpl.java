@@ -30,6 +30,11 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
+    public List<Participant> getAllParticipantByUserId(Integer id) {
+        return participantRepository.findAllByUserId(id);
+    }
+
+    @Override
     public List<Participant> getAllParticipantsByTeamId(Integer id) {
         return participantRepository.findAllByTeamId(id);
     }

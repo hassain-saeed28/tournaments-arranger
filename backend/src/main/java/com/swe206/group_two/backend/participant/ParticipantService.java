@@ -10,6 +10,8 @@ public interface ParticipantService {
 
     public abstract List<Participant> getAllParticipantsByTournamentId(Integer id);
 
+    public abstract List<Participant> getAllParticipantByUserId(Integer id);
+
     public abstract List<Participant> getAllParticipantsByTeamId(Integer id);
 
     public abstract Participant createParticipant(Participant participant);

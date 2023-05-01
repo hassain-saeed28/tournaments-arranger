@@ -84,12 +84,17 @@ INSERT INTO
     ranks (tournament_id, participant_id, current_rank)
 VALUES
     (1, NULL, NULL),
+    (1, 1, NULL),
     (1, 2, NULL),
-    (1, 3, NULL),
-    (3, 11, 1),
-    (3, 12, 2),
-    (3, 13, 3),
-    (3, 14, 3);
+    (2, 3, NULL),
+    (2, 4, NULL),
+    (2, 5, NULL),
+    (2, 6, NULL),
+    (2, 7, NULL),
+    (3, 8, 1),
+    (3, 9, 2),
+    (3, 10, 3),
+    (3, 11, 3);
 
 -- sports
 INSERT INTO
@@ -175,25 +180,25 @@ VALUES
     (
         'Reda Al Sulais',
         'Student',
-        'student_1@email.com',
+        's202163910@kfupm.edu.sa',
         'fe627eeced3bcd4bf40e759c1511e2d4d48065d7b0280af938d816cfae8cb8f7de51477b6225cbd9284e777b7c886e096918f8d81b40379fe06a07531ed632c2'
     ),
     (
         'Hussain Alsayhah',
         'Student',
-        'student_2@gmail.com',
+        '202028180@kfupm.edu.sa',
         '7ab0d840335ba0a0ce98674463fcc285ded7a53ed7b43e0f7cebf10b67db1bfb660f4f8c877838fc67f0be8531ad1aa5d792a33bb832728c448840eecd4b651a'
     ),
     (
         'Mahdi Alyousef',
         'Student',
-        'student_4@gmail.com',
+        '202166410@kfupm.edu.sa',
         'f199285f06d7dd8c38862266a825f52699183bd922e6773042a5e34b4ec947859740de6042ff36feaa452fcda8d855413c69417ca087dc6bb6cd0072cee7b24b'
     ),
     (
         'Feras Alhazmi',
         'Student',
-        'student_5@gmail.com',
+        '202031280@kfupm.edu.sa',
         '0bc29c7f14d19cc04a2c564ad8289288d4df933dcbaf1433730030cb1dbca746e323608a9995cd5204084872fcc023a238ccbbdbecf64dc59dfc95003404c83f'
     ),
     (

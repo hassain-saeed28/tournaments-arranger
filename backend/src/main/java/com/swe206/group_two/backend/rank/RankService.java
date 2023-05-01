@@ -10,6 +10,8 @@ public interface RankService {
 
     public abstract List<Rank> getAllRanksByTournamentId(Integer id);
 
+    public abstract Rank getRankByParticipantId(Integer id);
+
     public abstract Rank createRank(Rank rank);
 
     public abstract void deleteAllRanks();

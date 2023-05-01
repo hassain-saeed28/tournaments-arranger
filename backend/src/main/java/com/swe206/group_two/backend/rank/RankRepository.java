@@ -14,6 +14,8 @@ public interface RankRepository extends JpaRepository<Rank, Integer> {
 
     public abstract List<Rank> findAllByTournamentId(Integer id);
 
+    public abstract Rank findByParticipantId(Integer id);
+
     @Override
     public abstract <S extends Rank> S save(S rank);
 

@@ -2,6 +2,7 @@ package com.swe206.group_two.backend.match;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.swe206.group_two.backend.participant.Participant;
 import com.swe206.group_two.backend.participant.ParticipantServiceImpl;
+import com.swe206.group_two.backend.rank.RankServiceImpl;
 import com.swe206.group_two.backend.team.Team;
 import com.swe206.group_two.backend.team.TeamServiceImpl;
 import com.swe206.group_two.backend.tournament.Tournament;
@@ -31,6 +33,9 @@ public class MatchServiceImpl implements MatchService {
 
     @Autowired
     private TeamServiceImpl teamServiceImpl;
+
+    @Autowired
+    private RankServiceImpl rankServiceImpl;
 
     @Override
     public List<Match> getAllMatches() {
@@ -63,7 +68,7 @@ public class MatchServiceImpl implements MatchService {
     public void deleteMatchById(Integer id) {
         matchRepository.deleteById(id);
     }
-    
+
     @Override
     public Match setMatchScoreById(Integer id,
             Integer firstParticipantScores, Integer secondParticipantScores) {
@@ -188,6 +193,50 @@ public class MatchServiceImpl implements MatchService {
             matches.add(new Match(tournamentId, usersIds.get(2 * i), usersIds.get(2 * i + 1),
                     null, null, date.plusDays(i * daysBetweenStages)));
             i++;
+        }
+    }
+
+    public void calculateWinners(Integer tournamentId) {
+        Tournament tournament = tournamentServiceImpl.getTournamentById(tournamentId).get();
+        TournamentType type = tournament.getType();
+        TournamentBased based = tournament.getBased();
+
+        List<Participant> participants;
+        List<Team> teams;
+        Integer numberOfParticipants;
+
+        if (type.equals(TournamentType.RoundRobin)) {
+            if (based.equals(TournamentBased.Individual)) {
+                participants = participantServiceImpl.getAllParticipantsByTournamentId(tournamentId).stream()
+                        .filter(participant -> participant.getTeamId().equals(null)).collect(Collectors.toList());
+                numberOfParticipants = participants.size();
+
+                Collections.sort(participants);
+
+                // no draw case
+                for (int i = 0; i < numberOfParticipants; i++)
+                    rankServiceImpl.getRankByParticipantId(participants.get(i).getId()).setCurrentRank(i + 1);
+
+            } else {
+                teams = teamServiceImpl.getAllTeamsByTournamentId(tournamentId);
+                numberOfParticipants = teams.size();
+
+                participants = new ArrayList<>();
+
+                for (int i = 0; i < numberOfParticipants; i++)
+                    participants.add(participantServiceImpl.getAllParticipantsByTeamId(teams.get(i).getId()).get(0));
+
+                Collections.sort(participants);
+
+                teams.clear();
+
+                for (int i = 0; i < numberOfParticipants; i++)
+                    teams.add(teamServiceImpl.getTeamById(participants.get(i).getTeamId()).get());
+
+                // no draw case
+                for (int i = 0; i < numberOfParticipants; i++)
+                    rankServiceImpl.getRankById(teams.get(i).getRankId()).get().setCurrentRank(i + 1);
+            }
         }
     }
 }

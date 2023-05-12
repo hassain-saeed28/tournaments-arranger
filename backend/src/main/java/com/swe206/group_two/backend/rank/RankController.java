@@ -40,7 +40,7 @@ public class RankController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Rank> getTeamById(@PathVariable("id") Integer id) {
+    public ResponseEntity<Rank> getRankById(@PathVariable("id") Integer id) {
         try {
             Optional<Rank> ranks = rankServiceImpl.getRankById(id);
 

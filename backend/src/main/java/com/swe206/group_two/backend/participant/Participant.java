@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "participants")
-public class Participant {
+public class Participant implements Comparable<Participant> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "participant_id", nullable = false)
@@ -101,5 +101,15 @@ public class Participant {
                 + "teamId=" + this.teamId + ", "
                 + "participantCurrentPoints=" + this.participantCurrentPoints + ""
                 + '}';
+    }
+
+    @Override
+    public int compareTo(Participant o) {
+        if (this.participantCurrentPoints - o.participantCurrentPoints == 0) {
+            return 0;
+        } else if (this.participantCurrentPoints - o.participantCurrentPoints < 0)
+            return 1;
+        return -1;
+
     }
 }

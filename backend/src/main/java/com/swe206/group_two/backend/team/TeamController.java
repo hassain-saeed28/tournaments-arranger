@@ -10,9 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.swe206.group_two.backend.participant.Participant;
 import com.swe206.group_two.backend.participant.ParticipantServiceImpl;
 import com.swe206.group_two.backend.utils.JsonMappers;
 
@@ -58,6 +61,31 @@ public class TeamController {
                 json.put("participants", participantServiceImpl
                         .getAllParticipantsByTournamentId(id));
                 return new ResponseEntity<>(json.getJson(), HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<?> teamSwap(@PathVariable("id") int id,
+            @RequestBody TeamSwapDTO teamSwapDTO) {
+        try {
+            List<Participant> participants = participantServiceImpl
+                    .getAllParticipantsByTeamId(id);
+            if (participants.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                for (Participant participant : participants) {
+                    if (participant.getUserId().equals(teamSwapDTO.getOldUser())) {
+                        participant.setUserId(teamSwapDTO.getNewUser());
+                        participantServiceImpl.createParticipant(participant);
+                    }
+                }
+                Map<String, List<Participant>> map = new HashMap<>();
+                map.put("data", participantServiceImpl
+                        .getAllParticipantsByTeamId(id));
+                return new ResponseEntity<>(map, HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

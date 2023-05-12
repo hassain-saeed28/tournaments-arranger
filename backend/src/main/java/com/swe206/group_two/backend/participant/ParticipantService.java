@@ -16,6 +16,8 @@ public interface ParticipantService {
 
     public abstract Participant createParticipant(Participant participant);
 
+    public abstract Participant updateParticipant(Participant participant);
+
     public abstract void deleteAllParticipants();
 
     public abstract void deleteParticipantById(Integer id);

@@ -45,6 +45,11 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
+    public Participant updateParticipant(Participant participant) {
+        return participantRepository.save(participant);
+    }
+
+    @Override
     public void deleteAllParticipants() {
         participantRepository.deleteAll();
     }

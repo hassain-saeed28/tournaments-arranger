@@ -23,5 +23,4 @@ public interface MatchRepository extends JpaRepository<Match, Integer> {
     @Override
     public abstract void deleteById(Integer id);
 
-    // public abstract void setPoints(Integer points);
 }

@@ -20,4 +20,6 @@ public interface MatchService {
             Integer firstParticipantScores, Integer secondParticipantScores);
 
     public abstract List<Match> generateMatches(Integer tournamentId);
+
+    public abstract void setPoints(Integer id);
 }

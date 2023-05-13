@@ -56,6 +56,54 @@ VALUES
         2,
         0,
         '2023-03-15'
+    ),
+    (
+        2,
+        3,
+        4,
+        NULL,
+        NULL,
+        '2023-04-01'
+    ),
+    (
+        2,
+        5,
+        6,
+        NULL,
+        NULL,
+        '2023-04-01'
+    ),
+    (
+        2,
+        3,
+        5,
+        NULL,
+        NULL,
+        '2023-04-08'
+    ),
+    (
+        2,
+        4,
+        6,
+        NULL,
+        NULL,
+        '2023-04-08'
+    ),
+    (
+        2,
+        8,
+        6,
+        NULL,
+        NULL,
+        '2023-04-15'
+    ),
+    (
+        2,
+        4,
+        5,
+        NULL,
+        NULL,
+        '2023-04-15'
     );
 
 -- participants
@@ -73,7 +121,6 @@ VALUES
     (3, 2, NULL, 0),
     (4, 2, NULL, 0),
     (5, 2, NULL, 0),
-    (6, 2, NULL, 0),
     (2, 3, NULL, 9),
     (3, 3, NULL, 6),
     (4, 3, NULL, 1),
@@ -90,7 +137,6 @@ VALUES
     (2, 4, NULL),
     (2, 5, NULL),
     (2, 6, NULL),
-    (2, 7, NULL),
     (3, 8, 1),
     (3, 9, 2),
     (3, 10, 3),
@@ -102,7 +148,11 @@ INSERT INTO
 VALUES
     ('Rocket League'),
     ('Call of Duty: Black Ops'),
-    ('Fifa');
+    ('Fifa'),
+    ('Football'),
+    ('Volleyball'),
+    ('Basketball'),
+    ('Tennis');
 
 -- teams
 INSERT INTO

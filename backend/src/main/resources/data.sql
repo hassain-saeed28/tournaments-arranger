@@ -91,7 +91,7 @@ VALUES
     ),
     (
         2,
-        8,
+        3,
         6,
         NULL,
         NULL,

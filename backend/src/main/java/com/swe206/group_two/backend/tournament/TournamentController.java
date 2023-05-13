@@ -152,7 +152,7 @@ public class TournamentController {
             if (_tournament.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                if (!tournamentDTO.isOpen())
+                if (!tournamentDTO.isOpen() && !tournamentDTO.isArchive())
                     matchServiceImpl.generateMatches(id);
 
                 return new ResponseEntity<>(

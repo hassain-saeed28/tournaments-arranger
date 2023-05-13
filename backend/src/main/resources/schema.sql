@@ -1,18 +1,3 @@
--- DROP TABLE IF EXISTS matches;
--- DROP TABLE IF EXISTS participants;
--- DROP TABLE IF EXISTS ranks;
--- DROP TABLE IF EXISTS sports;
--- DROP TABLE IF EXISTS teams;
--- DROP TABLE IF EXISTS tournaments;
--- DROP TABLE IF EXISTS users;
---
--- SELECT * FROM matches;
--- SELECT * FROM participants;
--- SELECT * FROM ranks;
--- SELECT * FROM sports;
--- SELECT * FROM teams;
--- SELECT * FROM tournaments;
--- SELECT * FROM users;
 CREATE TABLE IF NOT EXISTS matches (
     match_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     tournament_id INT NOT NULL,

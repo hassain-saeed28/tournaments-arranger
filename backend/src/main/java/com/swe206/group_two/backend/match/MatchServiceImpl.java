@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.swe206.group_two.backend.participant.Participant;
+import com.swe206.group_two.backend.participant.ParticipantRepository;
 import com.swe206.group_two.backend.participant.ParticipantServiceImpl;
+import com.swe206.group_two.backend.rank.Rank;
 import com.swe206.group_two.backend.rank.RankServiceImpl;
 import com.swe206.group_two.backend.team.Team;
 import com.swe206.group_two.backend.team.TeamServiceImpl;
@@ -24,6 +26,9 @@ import com.swe206.group_two.backend.utils.TournamentType;
 public class MatchServiceImpl implements MatchService {
     @Autowired
     private MatchRepository matchRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     @Autowired
     private TournamentServiceImpl tournamentServiceImpl;
@@ -75,18 +80,21 @@ public class MatchServiceImpl implements MatchService {
         Match match = matchRepository.findById(id).get();
         match.setFirstParticipantScores(firstParticipantScores);
         match.setSecondParticipantScores(secondParticipantScores);
+        matchRepository.save(match);
+        setPoints(id);
+        calculateWinners(getMatchById(id).get().getTournamentId());
         return matchRepository.save(match);
     }
 
     @Override
-    public void setPoints(Integer id) {
-        Match match = getMatchById(id).get();
+    public void setPoints(Integer matchId) {
+        Match match = getMatchById(matchId).get();
         Tournament tournament = tournamentServiceImpl.getTournamentById(match.getTournamentId()).get();
         TournamentType type = tournament.getType();
         TournamentBased based = tournament.getBased();
 
-        int score1 = match.getFirstParticipantScores();
-        int score2 = match.getSecondParticipantScores();
+        Integer score1 = match.getFirstParticipantScores();
+        Integer score2 = match.getSecondParticipantScores();
 
         if (type.equals(TournamentType.RoundRobin)) {
             if (based.equals(TournamentBased.Individual)) {
@@ -103,6 +111,10 @@ public class MatchServiceImpl implements MatchService {
                     participant1.setParticipantCurrentPoints(participant1.getParticipantCurrentPoints() + 1);
                     participant2.setParticipantCurrentPoints(participant2.getParticipantCurrentPoints() + 1);
                 }
+
+                participantRepository.save(participant1);
+                participantRepository.save(participant2);
+
             } else {
 
                 Team team1 = teamServiceImpl.getTeamById(
@@ -121,23 +133,30 @@ public class MatchServiceImpl implements MatchService {
                     for (int i = 0; i < teamOneParticipants.size(); i++) {
                         Participant participant = teamOneParticipants.get(i);
                         participant.setParticipantCurrentPoints(participant.getParticipantCurrentPoints() + 3);
+                        participantRepository.save(participant);
                     }
                 else if (score1 < score2)
                     for (int i = 0; i < teamTwoParticipants.size(); i++) {
                         Participant participant = teamTwoParticipants.get(i);
                         participant.setParticipantCurrentPoints(participant.getParticipantCurrentPoints() + 3);
+                        participantRepository.save(participant);
                     }
                 else {
                     for (int i = 0; i < teamOneParticipants.size(); i++) {
                         Participant participant = teamOneParticipants.get(i);
                         participant.setParticipantCurrentPoints(participant.getParticipantCurrentPoints() + 1);
+                        participantRepository.save(participant);
 
                         participant = teamTwoParticipants.get(i);
                         participant.setParticipantCurrentPoints(participant.getParticipantCurrentPoints() + 1);
+                        participantRepository.save(participant);
                     }
                 }
             }
         } else {
+
+            isLastMatchOfStage(matchId);
+
             if (based.equals(TournamentBased.Individual)) {
 
                 Participant participant1 = participantServiceImpl.getParticipantById(match.getFirstParticipantId())
@@ -145,10 +164,15 @@ public class MatchServiceImpl implements MatchService {
                 Participant participant2 = participantServiceImpl.getParticipantById(match.getSecondParticipantId())
                         .get();
 
-                if (score1 > score2)
+                if (score1 > score2) {
                     participant2.setParticipantCurrentPoints(-1);
-                else
+                    participantRepository.save(participant2);
+
+                } else {
+
                     participant1.setParticipantCurrentPoints(-1);
+                    participantRepository.save(participant1);
+                }
 
             } else {
 
@@ -168,20 +192,22 @@ public class MatchServiceImpl implements MatchService {
                     for (int i = 0; i < teamOneParticipants.size(); i++) {
                         Participant participant = teamTwoParticipants.get(i);
                         participant.setParticipantCurrentPoints(-1);
+                        participantRepository.save(participant);
                     }
                 else
                     for (int i = 0; i < teamTwoParticipants.size(); i++) {
+
                         Participant participant = teamOneParticipants.get(i);
                         participant.setParticipantCurrentPoints(-1);
+                        participantRepository.save(participant);
                     }
-
             }
         }
         calculateWinners(match.getTournamentId());
     }
 
     @Override
-    public List<Match> generateMatches(Integer tournamentId) {
+    public void generateMatches(Integer tournamentId) {
         List<Match> matches = new ArrayList<>();
         Tournament tournament = tournamentServiceImpl.getTournamentById(tournamentId).get();
         TournamentType type = tournament.getType();
@@ -196,7 +222,7 @@ public class MatchServiceImpl implements MatchService {
         if (type.equals(TournamentType.RoundRobin)) {
             if (based.equals(TournamentBased.Individual)) {
                 participants = participantServiceImpl.getAllParticipantsByTournamentId(tournamentId).stream()
-                        .filter(participant -> participant.getTeamId().equals(null)).collect(Collectors.toList());
+                        .filter(participant -> participant.getTeamId() == null).collect(Collectors.toList());
                 numberOfParticipants = participants.size();
 
                 List<Integer> ids = new ArrayList<>();
@@ -219,13 +245,13 @@ public class MatchServiceImpl implements MatchService {
         } else {
             if (based.equals(TournamentBased.Individual)) {
                 participants = participantServiceImpl.getAllParticipantsByTournamentId(tournamentId).stream()
-                        .filter(participant -> participant.getTeamId().equals(null)).collect(Collectors.toList());
+                        .filter(participant -> participant.getTeamId() == null).collect(Collectors.toList());
                 numberOfParticipants = participants.size();
 
                 List<Integer> ids = new ArrayList<>();
 
                 for (int i = 0; i < numberOfParticipants; i++) {
-                    if (participants.get(i).getParticipantCurrentPoints() > 0)
+                    if (participants.get(i).getParticipantCurrentPoints() == null)
                         ids.add(participants.get(i).getId());
                 }
                 eliminationSchedualing(ids, matches, tournamentId, daysBetweenStages, date);
@@ -236,14 +262,17 @@ public class MatchServiceImpl implements MatchService {
                 List<Integer> ids = new ArrayList<>();
 
                 for (int i = 0; i < numberOfParticipants; i++) {
-                    if (participantServiceImpl.getAllParticipantsByTeamId(teams.get(i).getId()).get(i)
-                            .getParticipantCurrentPoints() > 0)
+                    if (participantServiceImpl.getAllParticipantsByTeamId(teams.get(i).getId()).get(0)
+                            .getParticipantCurrentPoints() == null) {
                         ids.add(teams.get(i).getId());
+                    }
                 }
                 eliminationSchedualing(ids, matches, tournamentId, daysBetweenStages, date);
             }
         }
-        return matches;
+        for (int i = 0; i < matches.size(); i++) {
+            createMatch(matches.get(i));
+        }
     }
 
     public void roundRobinSchedualing(List<Integer> usersIds, List<Match> matches, Integer tournamentId,
@@ -299,13 +328,11 @@ public class MatchServiceImpl implements MatchService {
         }
 
         int i = 0;
-        if (date.compareTo(LocalDate.now()) < 0) {
-            date = LocalDate.now();
-            i++;
-        }
 
-        while (i < usersIds.size() / 2 - 1) {
-            matches.add(new Match(tournamentId, usersIds.get(2 * i), usersIds.get(2 * i + 1),
+        while (i < usersIds.size() / 2) {
+            matches.add(new Match(tournamentId,
+                    participantServiceImpl.getAllParticipantsByTeamId(usersIds.get(2 * i)).get(0).getId(),
+                    participantServiceImpl.getAllParticipantsByTeamId(usersIds.get(2 * i + 1)).get(0).getId(),
                     null, null, date.plusDays(i * daysBetweenStages)));
             i++;
         }
@@ -323,20 +350,24 @@ public class MatchServiceImpl implements MatchService {
         if (type.equals(TournamentType.RoundRobin)) {
             if (based.equals(TournamentBased.Individual)) {
                 participants = participantServiceImpl.getAllParticipantsByTournamentId(tournamentId).stream()
-                        .filter(participant -> participant.getTeamId().equals(null)).collect(Collectors.toList());
+                        .filter(participant -> participant.getTeamId() == null).collect(Collectors.toList());
                 numberOfParticipants = participants.size();
 
                 Collections.sort(participants);
 
                 // no draw case
-                for (int i = 0; i < numberOfParticipants; i++)
-                    rankServiceImpl.getRankByParticipantId(participants.get(i).getId()).setCurrentRank(i + 1);
+                for (int i = 0; i < numberOfParticipants; i++) {
+                    Rank rank = rankServiceImpl.getRankByParticipantId(participants.get(i).getId());
+                    rank.setCurrentRank(i + 1);
+                    rankServiceImpl.createRank(rank);
+
+                }
 
                 // draw case
                 for (int i = 1; i < numberOfParticipants; i++) {
                     if (participants.get(i - 1).getParticipantCurrentPoints() == participants.get(i)
                             .getParticipantCurrentPoints()) {
-                        draw(tournamentId, participants.get(i - 1), participants.get(i));
+                        draw(tournamentId, participants.get(i - 1), participants.get(i), i + 1);
                     }
                 }
 
@@ -361,7 +392,10 @@ public class MatchServiceImpl implements MatchService {
                     rankServiceImpl.getRankById(teams.get(i).getRankId()).get().setCurrentRank(i + 1);
                     participants = participantServiceImpl.getAllParticipantsByTeamId(teams.get(i).getId());
                     for (int j = 0; j < participants.size(); j++) {
-                        rankServiceImpl.getRankByParticipantId(participants.get(i).getId()).setCurrentRank(i + 1);
+                        Rank rank = rankServiceImpl.getRankByParticipantId(participants.get(i).getId());
+                        rank.setCurrentRank(i + 1);
+                        rankServiceImpl.createRank(rank);
+
                     }
                 }
 
@@ -376,19 +410,22 @@ public class MatchServiceImpl implements MatchService {
                 for (int i = 1; i < numberOfParticipants; i++) {
                     if (participants.get(i - 1).getParticipantCurrentPoints() == participants.get(i)
                             .getParticipantCurrentPoints()) {
-                        draw(tournamentId, participants.get(i - 1), participants.get(i));
+                        draw(tournamentId, participants.get(i - 1), participants.get(i), i + 1);
                     }
                 }
             }
         } else {
             if (based.equals(TournamentBased.Individual)) {
                 participants = participantServiceImpl.getAllParticipantsByTournamentId(tournamentId).stream()
-                        .filter(participant -> participant.getTeamId().equals(null)).collect(Collectors.toList());
+                        .filter(participant -> participant.getTeamId() == null).collect(Collectors.toList());
 
                 Collections.sort(participants);
 
-                if (participants.get(1).getParticipantCurrentPoints() < 0)
-                    rankServiceImpl.getRankByParticipantId(participants.get(0).getId()).setCurrentRank(1);
+                if (participants.get(0).getParticipantCurrentPoints() == null) {
+                    Rank rank = rankServiceImpl.getRankByParticipantId(participants.get(0).getId());
+                    rank.setCurrentRank(1);
+                    rankServiceImpl.createRank(rank);
+                }
 
             } else {
                 teams = teamServiceImpl.getAllTeamsByTournamentId(tournamentId);
@@ -401,22 +438,40 @@ public class MatchServiceImpl implements MatchService {
 
                 Collections.sort(participants);
 
-                int secondParticipantScore = participants.get(1).getParticipantCurrentPoints();
-                if (secondParticipantScore < 0) {
+                Integer secondParticipantScore = participants.get(0).getParticipantCurrentPoints();
+                if (secondParticipantScore == null) {
 
                     Team team = teamServiceImpl.getTeamById(participants.get(0).getTeamId()).get();
-                    rankServiceImpl.getRankById(team.getRankId()).get().setCurrentRank(1);
+                    if (participants.get(0).getParticipantCurrentPoints() == null) {
+                        Rank rank = rankServiceImpl.getRankByParticipantId(participants.get(0).getId());
+                        rank.setCurrentRank(1);
+                        rankServiceImpl.createRank(rank);
+                    }
                     participants.clear();
                     participants = participantServiceImpl.getAllParticipantsByTeamId(team.getId());
 
-                    for (int i = 0; i < participants.size(); i++)
-                        rankServiceImpl.getRankByParticipantId(participants.get(i).getId()).setCurrentRank(1);
+                    for (int i = 0; i < participants.size(); i++) {
+                        Rank rank = rankServiceImpl.getRankByParticipantId(participants.get(i).getId());
+                        rank.setCurrentRank(1);
+                        rankServiceImpl.createRank(rank);
+                    }
+
+                    Rank rank = rankServiceImpl
+                            .getRankById(teamServiceImpl.getTeamById(
+                                    participants.get(0).getTeamId()).get().getRankId())
+                            .get();
+                    rank.setCurrentRank(1);
+                    rankServiceImpl.createRank(rank);
                 }
             }
         }
     }
 
-    private void draw(Integer tournamentId, Participant participant1, Participant participant2) {
+    private void draw(Integer tournamentId, Participant participant1, Participant participant2, int rank) {
+        if (participant1.getParticipantCurrentPoints() == null ||
+                participant2.getParticipantCurrentPoints() == null)
+            return;
+
         List<Match> matches = getMatchesByTournamentId(tournamentId);
         int wins1 = 0;
         int wins2 = 0;
@@ -434,7 +489,11 @@ public class MatchServiceImpl implements MatchService {
                 if (matches.get(i).getFirstParticipantScores() == matches.get(i).getSecondParticipantScores()) {
                     for (int j = 0; i < matches.size(); i++) {
                         if (participant1.getId() == matches.get(i).getFirstParticipantId()) {
-                            if (matches.get(i).getFirstParticipantScores() > matches.get(i)
+                            if (matches.get(i).getFirstParticipantScores() == null
+                                    || matches.get(i).getSecondParticipantScores() == null)
+                                return;
+
+                            else if (matches.get(i).getFirstParticipantScores() > matches.get(i)
                                     .getSecondParticipantScores())
                                 wins1++;
                             goals1 += matches.get(i).getFirstParticipantScores();
@@ -476,22 +535,41 @@ public class MatchServiceImpl implements MatchService {
 
         if (based.equals(TournamentBased.Individual)) {
             if (wins1 > wins2) {
-                rankServiceImpl.getRankByParticipantId(participant2.getId())
-                        .setCurrentRank(
-                                rankServiceImpl.getRankByParticipantId(participant1.getId()).getCurrentRank() + 1);
+                Rank rank1 = rankServiceImpl.getRankByParticipantId(participant1.getId());
+                rank1.setCurrentRank(rank);
+                rankServiceImpl.createRank(rank1);
+
+                Rank rank2 = rankServiceImpl.getRankByParticipantId(participant2.getId());
+                rank2.setCurrentRank(rank + 1);
+                rankServiceImpl.createRank(rank2);
+
             } else if (wins1 < wins2) {
-                rankServiceImpl.getRankByParticipantId(participant1.getId())
-                        .setCurrentRank(
-                                rankServiceImpl.getRankByParticipantId(participant2.getId()).getCurrentRank() + 1);
+                Rank rank1 = rankServiceImpl.getRankByParticipantId(participant2.getId());
+                rank1.setCurrentRank(rank);
+                rankServiceImpl.createRank(rank1);
+
+                Rank rank2 = rankServiceImpl.getRankByParticipantId(participant1.getId());
+                rank2.setCurrentRank(rank + 1);
+                rankServiceImpl.createRank(rank2);
+
             } else {
                 if (goals1 - goalsRecived1 > goals2 - goalsRecived2) {
-                    rankServiceImpl.getRankByParticipantId(participant2.getId())
-                            .setCurrentRank(
-                                    rankServiceImpl.getRankByParticipantId(participant1.getId()).getCurrentRank() + 1);
-                } else if (goals1 - goalsRecived1 > goals2 - goalsRecived2) {
-                    rankServiceImpl.getRankByParticipantId(participant1.getId())
-                            .setCurrentRank(
-                                    rankServiceImpl.getRankByParticipantId(participant2.getId()).getCurrentRank() + 1);
+                    Rank rank1 = rankServiceImpl.getRankByParticipantId(participant1.getId());
+                    rank1.setCurrentRank(rank);
+                    rankServiceImpl.createRank(rank1);
+
+                    Rank rank2 = rankServiceImpl.getRankByParticipantId(participant2.getId());
+                    rank2.setCurrentRank(rank + 1);
+                    rankServiceImpl.createRank(rank2);
+
+                } else if (goals1 - goalsRecived1 < goals2 - goalsRecived2) {
+                    Rank rank1 = rankServiceImpl.getRankByParticipantId(participant2.getId());
+                    rank1.setCurrentRank(rank);
+                    rankServiceImpl.createRank(rank1);
+
+                    Rank rank2 = rankServiceImpl.getRankByParticipantId(participant1.getId());
+                    rank2.setCurrentRank(rank + 1);
+                    rankServiceImpl.createRank(rank2);
                 }
             }
         } else {
@@ -500,47 +578,102 @@ public class MatchServiceImpl implements MatchService {
             Team team2 = teamServiceImpl.getTeamById(participant2.getTeamId()).get();
 
             if (wins1 > wins2) {
-                rankServiceImpl.getRankById(team2.getRankId()).get()
-                        .setCurrentRank(rankServiceImpl.getRankById(team1.getRankId()).get().getCurrentRank() + 1);
+                Rank rank1 = rankServiceImpl.getRankById(team1.getRankId()).get();
+                rank1.setCurrentRank(rank);
+                rankServiceImpl.createRank(rank1);
+
+                Rank rank2 = rankServiceImpl.getRankById(team2.getRankId()).get();
+                rank2.setCurrentRank(rank + 1);
+                rankServiceImpl.createRank(rank2);
+
             } else if (wins1 < wins2) {
-                rankServiceImpl.getRankById(team1.getRankId()).get()
-                        .setCurrentRank(rankServiceImpl.getRankById(team2.getRankId()).get().getCurrentRank() + 1);
+                Rank rank1 = rankServiceImpl.getRankById(team2.getRankId()).get();
+                rank1.setCurrentRank(rank);
+                rankServiceImpl.createRank(rank1);
+
+                Rank rank2 = rankServiceImpl.getRankById(team1.getRankId()).get();
+                rank2.setCurrentRank(rank + 1);
+                rankServiceImpl.createRank(rank2);
+
             } else {
                 if (goals1 - goalsRecived1 > goals2 - goalsRecived2) {
-                    rankServiceImpl.getRankById(team2.getRankId()).get()
-                            .setCurrentRank(rankServiceImpl.getRankById(team1.getRankId()).get().getCurrentRank() + 1);
+                    Rank rank1 = rankServiceImpl.getRankById(team1.getRankId()).get();
+                    rank1.setCurrentRank(rank);
+                    rankServiceImpl.createRank(rank1);
+
+                    Rank rank2 = rankServiceImpl.getRankById(team2.getRankId()).get();
+                    rank2.setCurrentRank(rank + 1);
+                    rankServiceImpl.createRank(rank2);
+
                 } else if (goals1 - goalsRecived1 > goals2 - goalsRecived2) {
-                    rankServiceImpl.getRankById(team1.getRankId()).get()
-                            .setCurrentRank(rankServiceImpl.getRankById(team2.getRankId()).get().getCurrentRank() + 1);
+                    Rank rank1 = rankServiceImpl.getRankById(team2.getRankId()).get();
+                    rank1.setCurrentRank(rank);
+                    rankServiceImpl.createRank(rank1);
+
+                    Rank rank2 = rankServiceImpl.getRankById(team1.getRankId()).get();
+                    rank2.setCurrentRank(rank + 1);
+                    rankServiceImpl.createRank(rank2);
                 }
             }
 
             for (int i = 0; i < participantsOfTeamOne.size(); i++) {
                 if (wins1 > wins2) {
-                    rankServiceImpl.getRankByParticipantId(participantsOfTeamTwo.get(i).getId())
-                            .setCurrentRank(
-                                    rankServiceImpl.getRankByParticipantId(participantsOfTeamOne.get(i).getId())
-                                            .getCurrentRank() + 1);
+                    Rank rank1 = rankServiceImpl.getRankByParticipantId(participantsOfTeamOne.get(i).getId());
+                    rank1.setCurrentRank(rank);
+                    rankServiceImpl.createRank(rank1);
+
+                    Rank rank2 = rankServiceImpl.getRankByParticipantId(participantsOfTeamTwo.get(i).getId());
+                    rank2.setCurrentRank(rank);
+                    rankServiceImpl.createRank(rank2);
                 } else if (wins1 < wins2) {
-                    rankServiceImpl.getRankByParticipantId(participantsOfTeamOne.get(i).getId())
-                            .setCurrentRank(
-                                    rankServiceImpl.getRankByParticipantId(participantsOfTeamTwo.get(i).getId())
-                                            .getCurrentRank() + 1);
+                    Rank rank1 = rankServiceImpl.getRankByParticipantId(participantsOfTeamTwo.get(i).getId());
+                    rank1.setCurrentRank(rank);
+                    rankServiceImpl.createRank(rank1);
+
+                    Rank rank2 = rankServiceImpl.getRankByParticipantId(participantsOfTeamOne.get(i).getId());
+                    rank2.setCurrentRank(rank);
+                    rankServiceImpl.createRank(rank2);
                 } else {
                     if (goals1 - goalsRecived1 > goals2 - goalsRecived2) {
-                        rankServiceImpl.getRankByParticipantId(participantsOfTeamTwo.get(i).getId())
-                                .setCurrentRank(
-                                        rankServiceImpl.getRankByParticipantId(participantsOfTeamOne.get(i).getId())
-                                                .getCurrentRank()
-                                                + 1);
+                        Rank rank1 = rankServiceImpl.getRankByParticipantId(participantsOfTeamOne.get(i).getId());
+                        rank1.setCurrentRank(rank);
+                        rankServiceImpl.createRank(rank1);
+
+                        Rank rank2 = rankServiceImpl.getRankByParticipantId(participantsOfTeamTwo.get(i).getId());
+                        rank2.setCurrentRank(rank);
+                        rankServiceImpl.createRank(rank2);
                     } else if (goals1 - goalsRecived1 > goals2 - goalsRecived2) {
-                        rankServiceImpl.getRankByParticipantId(participantsOfTeamOne.get(i).getId())
-                                .setCurrentRank(
-                                        rankServiceImpl.getRankByParticipantId(participantsOfTeamTwo.get(i).getId())
-                                                .getCurrentRank()
-                                                + 1);
+                        Rank rank1 = rankServiceImpl.getRankByParticipantId(participantsOfTeamTwo.get(i).getId());
+                        rank1.setCurrentRank(rank);
+                        rankServiceImpl.createRank(rank1);
+
+                        Rank rank2 = rankServiceImpl.getRankByParticipantId(participantsOfTeamOne.get(i).getId());
+                        rank2.setCurrentRank(rank);
+                        rankServiceImpl.createRank(rank2);
                     }
                 }
+            }
+        }
+    }
+
+    private void isLastMatchOfStage(Integer matchId) {
+        List<Match> matches = getMatchesByTournamentId(getMatchById(matchId).get().getTournamentId());
+        if (tournamentServiceImpl.getTournamentById(matches.get(0).getTournamentId()).get().getBased()
+                .equals(TournamentBased.Individual)) {
+            List<Participant> participants = participantServiceImpl
+                    .getAllParticipantsByTournamentId(matches.get(0).getTournamentId()).stream()
+                    .filter(participant -> participant.getTeamId() == null).collect(Collectors.toList());
+            Match lastMatch = matches.get(matches.size() - 1);
+
+            if (matches.size() != participants.size() - 1 && matchId == lastMatch.getId()) {
+                generateMatches(matches.get(0).getTournamentId());
+            }
+        } else {
+            List<Team> teams = teamServiceImpl.getAllTeamsByTournamentId(matches.get(0).getTournamentId());
+            Match lastMatch = matches.get(matches.size() - 1);
+
+            if (matches.size() != teams.size() - 1 && matchId == lastMatch.getId()) {
+                generateMatches(matches.get(0).getTournamentId());
             }
         }
     }

@@ -49,16 +49,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public Team createTeam(Team team, List<Integer> usersIds) {
-        Team _team = teamRepository.save(team);
-        for (Integer userId : usersIds) {
-            participantServiceImpl.createParticipant(new Participant(
-                    userId, team.getTournamentId(), team.getId(), null));
-            emailServiceImpl.sendConfirmationMail(
-                    userServiceImpl.getUserById(userId).get().getEmail(),
-                    tournamentServiceImpl.getTournamentById(
-                            team.getTournamentId()).get().getName());
-        }
-        return _team;
+        return teamRepository.save(team);
     }
 
     @Override

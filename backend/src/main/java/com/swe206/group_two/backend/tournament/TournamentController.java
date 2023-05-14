@@ -17,13 +17,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.swe206.group_two.backend.email.EmailServiceImpl;
 import com.swe206.group_two.backend.match.MatchServiceImpl;
+import com.swe206.group_two.backend.participant.Participant;
 import com.swe206.group_two.backend.participant.ParticipantServiceImpl;
 import com.swe206.group_two.backend.rank.Rank;
 import com.swe206.group_two.backend.rank.RankServiceImpl;
 import com.swe206.group_two.backend.team.Team;
 import com.swe206.group_two.backend.team.TeamDTO;
 import com.swe206.group_two.backend.team.TeamServiceImpl;
+import com.swe206.group_two.backend.user.UserServiceImpl;
 import com.swe206.group_two.backend.utils.JsonMappers;
 
 @RestController
@@ -34,17 +37,23 @@ public class TournamentController {
     private final RankServiceImpl rankServiceImpl;
     private final ParticipantServiceImpl participantServiceImpl;
     private final MatchServiceImpl matchServiceImpl;
+    private final EmailServiceImpl emailServiceImpl;
+    private final UserServiceImpl userServiceImpl;
 
     public TournamentController(TournamentServiceImpl tournamentServiceImpl,
             TeamServiceImpl teamServiceImpl,
             RankServiceImpl rankServiceImpl,
             ParticipantServiceImpl participantServiceImpl,
-            MatchServiceImpl matchServiceImpl) {
+            MatchServiceImpl matchServiceImpl,
+            EmailServiceImpl emailServiceImpl,
+            UserServiceImpl userServiceImpl) {
         this.tournamentServiceImpl = tournamentServiceImpl;
         this.teamServiceImpl = teamServiceImpl;
         this.rankServiceImpl = rankServiceImpl;
         this.participantServiceImpl = participantServiceImpl;
         this.matchServiceImpl = matchServiceImpl;
+        this.emailServiceImpl = emailServiceImpl;
+        this.userServiceImpl = userServiceImpl;
     }
 
     @GetMapping
@@ -131,11 +140,23 @@ public class TournamentController {
             } else {
                 Rank rank = rankServiceImpl.createRank(
                         new Rank(id, null, null));
-                return new ResponseEntity<>(
-                        teamServiceImpl.createTeam(
-                                new Team(teamDTO.getName(), id, rank.getId()),
-                                teamDTO.getUsersIds()),
-                        HttpStatus.OK);
+                Team team = teamServiceImpl.createTeam(
+                        new Team(teamDTO.getName(), id, rank.getId()),
+                        teamDTO.getUsersIds());
+
+                for (Integer userId : teamDTO.getUsersIds()) {
+                    Participant participant = participantServiceImpl.createParticipant(new Participant(
+                            userId, team.getTournamentId(), team.getId(), null));
+                    rankServiceImpl.createRank(new Rank(id, participant.getId(), null));
+                    try {
+                        emailServiceImpl.sendConfirmationMail(
+                                userServiceImpl.getUserById(userId).get().getEmail(),
+                                tournamentServiceImpl.getTournamentById(
+                                        team.getTournamentId()).get().getName());
+                    } catch (Exception e) {
+                    }
+                }
+                return new ResponseEntity<>(team, HttpStatus.OK);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -152,8 +173,10 @@ public class TournamentController {
             if (_tournament.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                if (!tournamentDTO.isOpen() && !tournamentDTO.isArchive())
+                if (!tournamentDTO.isOpen() && !tournamentDTO.isArchive()) {
+
                     matchServiceImpl.generateMatches(id);
+                }
 
                 return new ResponseEntity<>(
                         tournamentServiceImpl.updateTournamentById(id, tournamentDTO),

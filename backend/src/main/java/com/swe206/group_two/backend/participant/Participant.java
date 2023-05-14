@@ -36,6 +36,7 @@ public class Participant implements Comparable<Participant> {
             Integer participantCurrentPoints) {
         this.userId = userId;
         this.tournamentId = tournamentId;
+        this.teamId = teamId;
         this.participantCurrentPoints = participantCurrentPoints;
     }
 
@@ -105,11 +106,24 @@ public class Participant implements Comparable<Participant> {
 
     @Override
     public int compareTo(Participant o) {
-        if (this.participantCurrentPoints - o.participantCurrentPoints == 0) {
-            return 0;
-        } else if (this.participantCurrentPoints - o.participantCurrentPoints < 0)
-            return 1;
-        return -1;
+        if (this.participantCurrentPoints != null && o.participantCurrentPoints != null)
+            if (this.participantCurrentPoints - o.participantCurrentPoints == 0) {
+                return 0;
+            } else if (this.participantCurrentPoints - o.participantCurrentPoints < 0)
+                return 1;
+            else
+                return -1;
+        else {
+            if(this.participantCurrentPoints == null && o.participantCurrentPoints == null){
+                return 0;
+            }
+            else if(this.participantCurrentPoints != null && o.participantCurrentPoints == null){
+                return 1;
+            }
+            else{
+                return -1;
+            }
+        }
 
     }
 }

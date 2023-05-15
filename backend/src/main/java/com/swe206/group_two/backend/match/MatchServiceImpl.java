@@ -103,6 +103,15 @@ public class MatchServiceImpl implements MatchService {
                 Participant participant2 = participantServiceImpl.getParticipantById(match.getSecondParticipantId())
                         .get();
 
+                if (participant1.getParticipantCurrentPoints() == null)
+                    participant1.setParticipantCurrentPoints(0);
+
+                if (participant2.getParticipantCurrentPoints() == null)
+                    participant2.setParticipantCurrentPoints(0);
+
+                participantRepository.save(participant1);
+                participantRepository.save(participant2);
+
                 if (score1 > score2)
                     participant1.setParticipantCurrentPoints(participant1.getParticipantCurrentPoints() + 3);
                 else if (score1 < score2)
@@ -132,22 +141,38 @@ public class MatchServiceImpl implements MatchService {
                 if (score1 > score2)
                     for (int i = 0; i < teamOneParticipants.size(); i++) {
                         Participant participant = teamOneParticipants.get(i);
+                        if (participant.getParticipantCurrentPoints() == null) {
+                            participant.setParticipantCurrentPoints(0);
+                            participantRepository.save(participant);
+                        }
                         participant.setParticipantCurrentPoints(participant.getParticipantCurrentPoints() + 3);
                         participantRepository.save(participant);
                     }
                 else if (score1 < score2)
                     for (int i = 0; i < teamTwoParticipants.size(); i++) {
                         Participant participant = teamTwoParticipants.get(i);
+                        if (participant.getParticipantCurrentPoints() == null) {
+                            participant.setParticipantCurrentPoints(0);
+                            participantRepository.save(participant);
+                        }
                         participant.setParticipantCurrentPoints(participant.getParticipantCurrentPoints() + 3);
                         participantRepository.save(participant);
                     }
                 else {
                     for (int i = 0; i < teamOneParticipants.size(); i++) {
                         Participant participant = teamOneParticipants.get(i);
+                        if (participant.getParticipantCurrentPoints() == null) {
+                            participant.setParticipantCurrentPoints(0);
+                            participantRepository.save(participant);
+                        }
                         participant.setParticipantCurrentPoints(participant.getParticipantCurrentPoints() + 1);
                         participantRepository.save(participant);
 
                         participant = teamTwoParticipants.get(i);
+                        if (participant.getParticipantCurrentPoints() == null) {
+                            participant.setParticipantCurrentPoints(0);
+                            participantRepository.save(participant);
+                        }
                         participant.setParticipantCurrentPoints(participant.getParticipantCurrentPoints() + 1);
                         participantRepository.save(participant);
                     }
@@ -365,7 +390,7 @@ public class MatchServiceImpl implements MatchService {
                 for (int i = 1; i < numberOfParticipants; i++) {
                     if (participants.get(i - 1).getParticipantCurrentPoints() == participants.get(i)
                             .getParticipantCurrentPoints()) {
-                        draw(tournamentId, participants.get(i - 1), participants.get(i), i + 1);
+                        draw(tournamentId, participants.get(i - 1), participants.get(i), i);
                     }
                 }
 
@@ -408,7 +433,7 @@ public class MatchServiceImpl implements MatchService {
                 for (int i = 1; i < numberOfParticipants; i++) {
                     if (participants.get(i - 1).getParticipantCurrentPoints() == participants.get(i)
                             .getParticipantCurrentPoints()) {
-                        draw(tournamentId, participants.get(i - 1), participants.get(i), i + 1);
+                        draw(tournamentId, participants.get(i - 1), participants.get(i), i);
                     }
                 }
             }

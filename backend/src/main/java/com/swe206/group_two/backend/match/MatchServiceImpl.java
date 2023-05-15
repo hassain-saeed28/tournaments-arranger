@@ -221,8 +221,7 @@ public class MatchServiceImpl implements MatchService {
 
         if (type.equals(TournamentType.RoundRobin)) {
             if (based.equals(TournamentBased.Individual)) {
-                participants = participantServiceImpl.getAllParticipantsByTournamentId(tournamentId).stream()
-                        .filter(participant -> participant.getTeamId() == null).collect(Collectors.toList());
+                participants = participantServiceImpl.getAllParticipantsByTournamentId(tournamentId);
                 numberOfParticipants = participants.size();
 
                 List<Integer> ids = new ArrayList<>();
@@ -244,8 +243,7 @@ public class MatchServiceImpl implements MatchService {
             }
         } else {
             if (based.equals(TournamentBased.Individual)) {
-                participants = participantServiceImpl.getAllParticipantsByTournamentId(tournamentId).stream()
-                        .filter(participant -> participant.getTeamId() == null).collect(Collectors.toList());
+                participants = participantServiceImpl.getAllParticipantsByTournamentId(tournamentId);
                 numberOfParticipants = participants.size();
 
                 List<Integer> ids = new ArrayList<>();
